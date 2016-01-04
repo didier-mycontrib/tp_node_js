@@ -3,6 +3,7 @@ var http = require('http');
 var url = require('url');
 var querystring = require('querystring')
 var EventEmitter = require('events').EventEmitter;
+var mycomputer_module = require('./mycomputer_module'); // ./ for searching in local relative
 
 var myOpEventMgr = new EventEmitter();
 
@@ -15,8 +16,9 @@ var myHttpFunction = function(req, res) {
   if(operation=='/addition'){
 	  a=Number(params['a']);
 	  b=Number(params['b']);
-	  result=a+b;
-	  resultString = "" + a + "+" + b +"=" + result;
+	  //result=a+b;
+	  //resultString = "" + a + "+" + b +"=" + result;
+	  resultString = mycomputer_module.myAddStringFct(a,b);
 	  myOpEventMgr.emit('add',resultString); //emettre l'evenement 'add'
 	  res.write(resultString);
   }

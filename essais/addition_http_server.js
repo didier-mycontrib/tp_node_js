@@ -4,6 +4,7 @@ var url = require('url');
 var querystring = require('querystring')
 var EventEmitter = require('events').EventEmitter;
 var mycomputer_module = require('./mycomputer_module'); // ./ for searching in local relative
+var markdown = require('markdown').markdown; // without "./" in node_modules sub directory
 
 var myOpEventMgr = new EventEmitter();
 
@@ -28,6 +29,7 @@ var myHttpFunction = function(req, res) {
 
 myOpEventMgr.on('add' , function(message){
 	console.log('add event with message=' +message);
+	console.log(markdown.toHTML('Un paragraphe en **markdown** !'));
 });
 
 var server = http.createServer();

@@ -1,0 +1,14 @@
+{
+  "name": "addition_http_server",
+  "version": "0.1.0",
+  "dependencies": {
+    "markdown": "~0.4"
+  },
+  "description": "addition http app",
+  "main": "addition_http_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

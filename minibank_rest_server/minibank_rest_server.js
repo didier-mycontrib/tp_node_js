@@ -41,6 +41,19 @@ app.get('/minibank/comptes', function(req, res,next) {
 	    res.end();
 	}	
 });
+
+// GET (array) /minibank/operations?numCpt=1
+app.get('/minibank/operations', function(req, res,next) {
+	var numCpt = req.query.numCpt;
+	console.log("operations pour numCpt=" + numCpt);
+    res.setHeader('Content-Type', 'application/json');
+	minibankDAO.findOperations(numCpt,onArrayResultReady);
+	function onArrayResultReady(err,listeOperations){
+		res.write(JSON.stringify(listeOperations));
+	    res.end();
+	}	
+});
+
 // GET /minibank/comptes/1
 app.get('/minibank/comptes/:numero', function(req, res,next) {
     res.setHeader('Content-Type', 'application/json');
@@ -48,6 +61,17 @@ app.get('/minibank/comptes/:numero', function(req, res,next) {
 	minibankDAO.findCompteById(numCpt,onItemResultReady);
 	function onItemResultReady(err,cpt){
 		res.write(JSON.stringify(cpt));
+		res.end();
+	}
+});
+
+// GET /minibank/clients/1
+app.get('/minibank/clients/:numero', function(req, res,next) {
+    res.setHeader('Content-Type', 'application/json');
+	numClient = req.params.numero;
+	minibankDAO.findClientById(numClient,onItemResultReady);
+	function onItemResultReady(err,cli){
+		res.write(JSON.stringify(cli));
 		res.end();
 	}
 });

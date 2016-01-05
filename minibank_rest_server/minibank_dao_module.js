@@ -38,22 +38,17 @@ function MinibankDAO(mongoDbConnector) {
      this.mongoDbConnector = myDefaultGlobalMongoDbConnector;	  
 	 console.log("MinibankDAO initialized with default mongoDbConnector ");
   }
+  this.genericFindList=genericFindList;
+  this.genericFindById=genericFindById;
+  
   this.findAllComptes = findAllComptes;
   this.findCompteById = findCompteById;
   this.findComptesOfClient= findComptesOfClient;
+  this.findOperations=findOperations;
+  this.findClientById=findClientById;
 }
 
-var findAllComptes = function(callback_with_err_and_array_of_comptes) {
-   this.mongoDbConnector.simpleConnect( function(db) {
-	   var cursor = db.collection('comptes').find();
-	   cursor.toArray(function(err, arr) {
-		   addAliasFieldInCollection(arr,"_id","numero");
-		   callback_with_err_and_array_of_comptes(err,arr);
-		   //console.log("arrayComptes="+JSON.stringify(arr) + " before db.close()");
-		   db.close();
-		});
-   });
-};
+
 
 var findComptesOfClient = function(numCli , callback_with_err_and_array_of_comptes) {
 	var queryClient = { '_id' : Number(numCli) };
@@ -94,23 +89,47 @@ var findComptesOfClient = function(numCli , callback_with_err_and_array_of_compt
    });
 };
 
-
-
-var findCompteById = function(numCpt, callback_with_err_and_compte) {
-   var query = { '_id' : Number(numCpt) };
-   //console.log("findCompteById with query  = " + JSON.stringify(query));
-   this.mongoDbConnector.simpleConnect( function(db) {
-	   db.collection('comptes').findOne(query , function(err, item) {
-		  if(err!=null) {
-		  console.log("findCompteById error = " + err);
-	      }
-	       assert.equal(null, err); 
-		   item['numero']=item['_id'];//addAliasField
-		   callback_with_err_and_compte(err,item);
-		   //console.log("compte="+JSON.stringify(item) + " before db.close()");
+var genericFindList = function(collectionName,query,callback_with_err_and_array) {
+     this.mongoDbConnector.simpleConnect( function(db) {
+	   var cursor = db.collection(collectionName).find(query);
+	   cursor.toArray(function(err, arr) {
+		   addAliasFieldInCollection(arr,"_id","numero");
+		   callback_with_err_and_array(err,arr);
 		   db.close();
 		});
    });
+};
+
+var findOperations = function(numCpt,callback_with_err_and_array_of_operations) {
+   this.genericFindList('operations',{ '_id' : Number(numCpt) },callback_with_err_and_array_of_operations);
+};
+
+var findAllComptes = function(callback_with_err_and_array_of_comptes) {
+    this.genericFindList('comptes',{},callback_with_err_and_array_of_comptes);
+};
+
+var genericFindById = function(collectionName,query, callback_with_err_and_item) {
+   //console.log("genericFindById with query  = " + JSON.stringify(query));
+   this.mongoDbConnector.simpleConnect( function(db) {
+	   db.collection(collectionName).findOne(query , function(err, item) {
+		  if(err!=null) {
+		  console.log("genericFindById error = " + err);
+	      }
+	       assert.equal(null, err); 
+		   item['numero']=item['_id'];//addAliasField
+		   callback_with_err_and_item(err,item);
+		   //console.log("item="+JSON.stringify(item) + " before db.close()");
+		   db.close();
+		});
+   });
+};
+
+var findCompteById = function(numCpt, callback_with_err_and_compte) {
+   this.genericFindById('comptes',{ '_id' : Number(numCpt) },callback_with_err_and_compte);
+};
+
+var findClientById = function(numCli, callback_with_err_and_client) {
+   this.genericFindById('clients',{ '_id' : Number(numCli) },callback_with_err_and_client);
 };
 
 

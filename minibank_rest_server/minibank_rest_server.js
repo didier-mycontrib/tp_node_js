@@ -28,18 +28,18 @@ app.get('/minibank', function(req, res , next) {
 
 
 // listeComptes =new Array(); //with index from 0 to length-1
-var listeComptes = {}; //empty map
+//var listeComptes = {}; //empty map
 //listeComptes[1]={numero : 1,label : "compte 1 (courant)",solde : 600.0};
 //listeComptes[2]={numero : 2,label : "compte 2 (codevi)",solde : 200.0};
 
-listeComptes = minibankDao.loadAllComptes();
+var listeComptes = minibankDao.loadAllComptes();
 
 // GET (array) /minibank/comptes?numClient=1
 app.get('/minibank/comptes', function(req, res,next) {
 	numClient = req.query.numClient;
 	console.log("comptes pour numClient=" + numClient);
     res.setHeader('Content-Type', 'application/json');
-	res.write(JSON.stringify(mapAsArray(listeComptes)));
+	res.write(JSON.stringify(listeComptes));
 	res.end();
 });
 // GET /minibank/comptes/1

@@ -1,26 +1,80 @@
 
 //Minibank DAO module (with MongoDB/MongoClient)
-
+var EventEmitter = require('events').EventEmitter;
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 
+/********************** MyMongoDbConnector ******************************/
 
+function MyMongoDbConnector(dbUrl) {
+  this.dbUrl = dbUrl;
+  if(this.dbUrl == null) {	  
+	  this.dbUrl = 'mongodb://localhost:27017/test' ; //by default
+	  console.log("default dbUrl = " + this.dbUrl);
+  }
+}
 
+MyMongoDbConnector.prototype = new EventEmitter();
 
-// listeComptes =new Array(); //with index from 0 to length-1
-//var listeComptes = {}; //empty map
-//listeComptes[1]={numero : 1,label : "compte 1 (courant)",solde : 600.0};
-//listeComptes[2]={numero : 2,label : "compte 2 (codevi)",solde : 200.0};
+MyMongoDbConnector.prototype.connect = function() {
+  var that = this;
+  MongoClient.connect(this.dbUrl, function(err, db) {
+	  if(err!=null) {
+		  console.log("mongoDb connection error = " + err);
+		  that.emit('error', err);
+	  }
+	  assert.equal(null, err);
+	  console.log("Connected correctly to mongodb database" );
+	  that.emit('connected', db); 
+	});
+	return this; //pour enchaîner .connect().on('ready',function(db){...});
+}
 
-/*
-var mapAsArray = function (map){
-	var a = new Array();
-    for(var e in map){
-		a.push(map[e]);
-	}
-return a;	
+var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector();
+
+/**********************  MinibankDAO ******************************/
+
+function MinibankDAO(mongoDbConnector) {
+  this.mongoDbConnector = mongoDbConnector;
+  if(this.mongoDbConnector == null) {
+     this.mongoDbConnector = myDefaultGlobalMongoDbConnector;	  
+	 console.log("MinibankDAO initialized with default mongoDbConnector ");
+  }
+  this.findAllComptes = findAllComptes;
+  this.findCompteById = findCompteById;
+}
+
+var findAllComptes = function(callback_with_err_and_array_of_comptes) {
+   this.mongoDbConnector.connect().on('connected', function(db) {
+	   var cursor = db.collection('comptes').find();
+	   cursor.toArray(function(err, arr) {
+		   addAliasFieldInCollection(arr,"_id","numero");
+		   callback_with_err_and_array_of_comptes(err,arr);
+		   //console.log("arrayComptes="+JSON.stringify(arr) + " before db.close()");
+		   db.close();
+		});
+   });
 };
-*/
+
+var findCompteById = function(numCpt, callback_with_err_and_compte) {
+   var query = { '_id' : Number(numCpt) };
+   console.log("findCompteById with query  = " + JSON.stringify(query));
+   this.mongoDbConnector.connect().on('connected', function(db) {
+	   db.collection('comptes').findOne(query , function(err, item) {
+		  if(err!=null) {
+		  console.log("findCompteById error = " + err);
+	      }
+	       assert.equal(null, err); 
+		   item['numero']=item['_id'];//addAliasField
+		   callback_with_err_and_compte(err,item);
+		   //console.log("compte="+JSON.stringify(item) + " before db.close()");
+		   db.close();
+		});
+   });
+};
+
+
+/**************** util ********************/
 
 var addAliasFieldInCollection = function(coll, fieldName,aliasName){
 	 for(i=0;i<coll.length;i++){
@@ -29,52 +83,8 @@ var addAliasFieldInCollection = function(coll, fieldName,aliasName){
 	}	
 };
 
+/**************** module exports ********************/
 
-var findComptes  = function(db,arrayComptes) {
-   var cursor = db.collection('comptes').find();
-   cursor.toArray(function(err, arr) {
-	  assert.equal(null, err);
-      /*for(i=0;i<arr.length;i++){
-		 arrayComptes.push(arr[i]);
-	  }*/
-	  Array.prototype.push.apply(arrayComptes, arr);//add elt of second array in first array
-	  console.log("arrayComptes="+JSON.stringify(arrayComptes));
-	  db.close();
-      addAliasFieldInCollection(arrayComptes,"_id","numero");
-   });
-   /*
-    cursor.each(function(err, cpt) {
-	  assert.equal(null, err);
-      if (cpt != null) {
-         console.log("cpt="+JSON.stringify(cpt));
-		 //listeComptes[Number(cpt._id)]=cpt;
-		 arrayComptes.push(cpt);
-      } else {
-         db.close();
-		 addAliasFieldInCollection(arrayComptes,"_id","numero");
-      }
-   });*/
-};
-
-var dbUrl = 'mongodb://localhost:27017/test';
-
-var loadAllComptes = function () {
-	
-	var arrayComptes = new Array();
-		
-	MongoClient.connect(dbUrl, function(err, db) {
-	  if(err!=null) {
-		  console.log("mongoDb connection error = " + err);
-	  }
-	  assert.equal(null, err);
-	  console.log("Connected correctly to mongodb database" );
-	  findComptes(db, arrayComptes); //asynchrone !!!
-	});
-  
-return arrayComptes;
-
-};
-
-exports.loadAllComptes = loadAllComptes;
+exports.MinibankDAO = MinibankDAO;
 
 

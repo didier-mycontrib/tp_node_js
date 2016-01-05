@@ -5,8 +5,9 @@
 //var EventEmitter = require('events').EventEmitter;
 var express = require('express');
 var app = express();
-var minibankDao = require('./minibank_dao_module');
-//var assert = require('assert');
+var minibankDaoModule = require('./minibank_dao_module');
+var minibankDAO = new minibankDaoModule.MinibankDAO();
+var assert = require('assert');
 
 //express framework manage basic route in server side with app.get() , app.post() , app.delete() , ...
 
@@ -27,28 +28,27 @@ app.get('/minibank', function(req, res , next) {
 });
 
 
-// listeComptes =new Array(); //with index from 0 to length-1
-//var listeComptes = {}; //empty map
-//listeComptes[1]={numero : 1,label : "compte 1 (courant)",solde : 600.0};
-//listeComptes[2]={numero : 2,label : "compte 2 (codevi)",solde : 200.0};
-
-var listeComptes = minibankDao.loadAllComptes();
 
 // GET (array) /minibank/comptes?numClient=1
 app.get('/minibank/comptes', function(req, res,next) {
 	numClient = req.query.numClient;
 	console.log("comptes pour numClient=" + numClient);
     res.setHeader('Content-Type', 'application/json');
-	res.write(JSON.stringify(listeComptes));
-	res.end();
+	minibankDAO.findAllComptes(onArrayResultReady);
+	function onArrayResultReady(err,listeComptes){
+		res.write(JSON.stringify(listeComptes));
+	    res.end();
+	}	
 });
 // GET /minibank/comptes/1
 app.get('/minibank/comptes/:numero', function(req, res,next) {
     res.setHeader('Content-Type', 'application/json');
 	numCpt = req.params.numero;
-	cptJsonString = JSON.stringify(listeComptes[numCpt]);
-    res.write(cptJsonString);
-	res.end();
+	minibankDAO.findCompteById(numCpt,onItemResultReady);
+	function onItemResultReady(err,cpt){
+		res.write(JSON.stringify(cpt));
+		res.end();
+	}
 });
 
 app.listen(8282 , function () {

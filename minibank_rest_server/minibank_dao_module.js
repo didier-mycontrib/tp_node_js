@@ -42,6 +42,7 @@ function MinibankDAO(mongoDbConnector) {
   }
   this.findAllComptes = findAllComptes;
   this.findCompteById = findCompteById;
+  this.findComptesOfClient= findComptesOfClient;
 }
 
 var findAllComptes = function(callback_with_err_and_array_of_comptes) {
@@ -55,6 +56,47 @@ var findAllComptes = function(callback_with_err_and_array_of_comptes) {
 		});
    });
 };
+
+var findComptesOfClient = function(numCli , callback_with_err_and_array_of_comptes) {
+	var queryClient = { '_id' : Number(numCli) };
+	console.log("findComptesOfClient with queryClient  = " + JSON.stringify(queryClient));
+   this.mongoDbConnector.connect().on('connected', function(db) {
+	   var cursor = db.collection('clients').findOne(queryClient , function(err, cli) {
+		  if(err!=null) {
+		  console.log("findComptesOfClient error = " + err);
+	      }
+	       assert.equal(null, err); 
+		   if(cli==null){
+			    console.log("findComptesOfClient with null client with numCli = " + numCli);
+				callback_with_err_and_array_of_comptes(null,new Array());
+				db.close();
+		   }
+		   else 
+		   {
+		   var nbSubLoad = 0;
+		   for(i=0;i<cli.comptes.length;i++){
+			   var numCpt = cli.comptes[i];
+			   var queryCpt = { '_id' : Number(numCpt) };
+			   console.log("sub request findCompteById with queryCpt  = " + JSON.stringify(queryCpt));
+			   db.collection('comptes').findOne(queryCpt , function(err, item) {
+				   nbSubLoad++;
+				   item['numero']=item['_id'];//addAliasField
+				   cli.comptes[nbSubLoad-1]=item;
+				   console.log("compte="+JSON.stringify(item) + "in sub request with nbSubLoad=" + nbSubLoad);
+				   if(nbSubLoad==cli.comptes.length){					
+					   callback_with_err_and_array_of_comptes(null,cli.comptes);
+					   db.close();
+				   }
+			   });
+		   }
+		   console.log("cli="+JSON.stringify(cli) + " before db.close()");
+		  //db.close() not before end of subRequest async loop
+		   }
+		});
+   });
+};
+
+
 
 var findCompteById = function(numCpt, callback_with_err_and_compte) {
    var query = { '_id' : Number(numCpt) };

@@ -31,10 +31,11 @@ app.get('/minibank', function(req, res , next) {
 
 // GET (array) /minibank/comptes?numClient=1
 app.get('/minibank/comptes', function(req, res,next) {
-	numClient = req.query.numClient;
+	var numClient = req.query.numClient;
 	console.log("comptes pour numClient=" + numClient);
     res.setHeader('Content-Type', 'application/json');
-	minibankDAO.findAllComptes(onArrayResultReady);
+	//minibankDAO.findAllComptes(onArrayResultReady);
+	minibankDAO.findComptesOfClient(numClient,onArrayResultReady);
 	function onArrayResultReady(err,listeComptes){
 		res.write(JSON.stringify(listeComptes));
 	    res.end();

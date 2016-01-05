@@ -32,6 +32,17 @@ var addAliasFieldInCollection = function(coll, fieldName,aliasName){
 
 var findComptes  = function(db,arrayComptes) {
    var cursor = db.collection('comptes').find();
+   cursor.toArray(function(err, arr) {
+	  assert.equal(null, err);
+      /*for(i=0;i<arr.length;i++){
+		 arrayComptes.push(arr[i]);
+	  }*/
+	  Array.prototype.push.apply(arrayComptes, arr);//add elt of second array in first array
+	  console.log("arrayComptes="+JSON.stringify(arrayComptes));
+	  db.close();
+      addAliasFieldInCollection(arrayComptes,"_id","numero");
+   });
+   /*
     cursor.each(function(err, cpt) {
 	  assert.equal(null, err);
       if (cpt != null) {
@@ -42,7 +53,7 @@ var findComptes  = function(db,arrayComptes) {
          db.close();
 		 addAliasFieldInCollection(arrayComptes,"_id","numero");
       }
-   });
+   });*/
 };
 
 var dbUrl = 'mongodb://localhost:27017/test';

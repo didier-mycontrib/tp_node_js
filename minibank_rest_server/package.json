@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "express": "~3.3",
-	"mongodb" : "~2.0"
+	"mongodb" : "~2.0" ,
+	"q" : "~1.4"
   },
   "description": "minibank rest web services (json) for angular-js",
   "main": "minibank_rest_server.js",

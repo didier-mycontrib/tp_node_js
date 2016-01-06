@@ -2,7 +2,6 @@
 //Minibank DAO module (with MongoDB/MongoClient)
 var EventEmitter = require('events').EventEmitter;
 var MongoClient = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
 
 /********************** MyMongoDbConnector ******************************/
@@ -107,17 +106,14 @@ var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_
    });
 };
 
-var genericInsertOne = function(collectionName,newOne,callback_with_err_and_newId) {
+var genericInsertOne = function(collectionName,newOne,callback_with_err_and_result) {
      this.mongoDbConnector.simpleConnect( function(db) {
 	   db.collection(collectionName).insertOne( newOne , function(err, result) {
 		  if(err!=null) {
 		  console.log("genericInsertOne error = " + err);
-		  newId=null;
 	      } 
-		  else {newId=newOne._id;
-		  }
-		  callback_with_err_and_newId(err,newId);
-		  db.close();
+		   callback_with_err_and_result(err,result);
+		   db.close();
 		});
    });
 };
@@ -150,9 +146,7 @@ var genericFindById = function(collectionName,query, callback_with_err_and_item)
 		  console.log("genericFindById error = " + err);
 	      }
 	       assert.equal(null, err); 
-		   if(item!=null){
-		     item['numero']=item['_id'];//addAliasField
-		   }
+		   item['numero']=item['_id'];//addAliasField
 		   callback_with_err_and_item(err,item);
 		   //console.log("item="+JSON.stringify(item) + " before db.close()");
 		   db.close();

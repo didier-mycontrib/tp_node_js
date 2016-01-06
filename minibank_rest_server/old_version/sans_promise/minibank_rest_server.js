@@ -8,7 +8,6 @@ var app = express();
 var minibankDaoModule = require('./minibank_dao_module');
 var minibankDAO = new minibankDaoModule.MinibankDAO();
 var assert = require('assert');
-var Q = require('q');
 
 //express framework manage basic route in server side with app.get() , app.post() , app.delete() , ...
 
@@ -69,57 +68,31 @@ app.post('/minibank/verifyAuth', function(req, res,next) {
 // POST /minibank/virement
 app.post('/minibank/virement', function(req, res,next) {
 	var ordreVirement = req.body; // JSON input data with ok = null
-	console.log("ordreVirement :" +JSON.stringify(ordreVirement));
-
-    Q().then(loadCpt(Number(ordreVirement.numCptDeb)))
-    .then(updateCpt("debiter",Number(ordreVirement.montant)))
-    .then(console.log)
-    .catch(console.log);
-	
-	Q().then(loadCpt(Number(ordreVirement.numCptCred)))
-    .then(updateCpt("crediter",Number(ordreVirement.montant)))
-    .then(console.log)
-    .catch(console.log);
- 
-	 function loadCpt(numCpt){	 //wrapper function around function pour promesse avec argument spécifique (lors de then(...))
-		 return function(){
-			var deferred = Q.defer();		
-			minibankDAO.genericFindById('comptes' , { '_id' : numCpt } ,deferred.makeNodeResolver());
-			return deferred.promise;
-		  }
-	 }
-	 function updateCpt(debiterOuCrediter,montant){	 //wrapper function around function pour promesse avec argument spécifique (lors de then(...))
-		return	function (cpt){
-			var deferred = Q.defer();
-			nouveauSolde = cpt.solde;
-			if(debiterOuCrediter=="debiter"){
-				nouveauSolde -=  montant; coeff= -1;
-			}
-			if(debiterOuCrediter=="crediter"){
-				nouveauSolde +=  montant; coeff= +1;
-			}
-			minibankDAO.genericUpdateOne('comptes',Number(cpt._id) , { 'solde' : nouveauSolde }, function(err,results){
-				if(err)  deferred.reject(err);
-			});
-			var newDebOperation = {"compte" : cpt._id ,"label" : debiterOuCrediter +" (virement)","montant" : montant * coeff,"dateOp" : currentDate()};
-			minibankDAO.genericInsertOne('operations',newDebOperation, function(err,newId){
-				if(err)  deferred.reject(err);
-				else deferred.resolve("new operation inserted with _id=" + newId );
-			});
-			return deferred.promise;
-		}
-	 }
-	
-	
-	
+	console.log("ordreVirement :" +JSON.stringify(ordreVirement)); 
+	minibankDAO.genericFindById('comptes' , { '_id' : ordreVirement.numCptDeb }  , function(err,cptDeb) {
+		nouveauSolde = cptDeb.solde - Number(ordreVirement.montant);
+		minibankDAO.genericUpdateOne('comptes',ordreVirement.numCptDeb , { 'solde' : nouveauSolde }, function(err,results){
+			assert.equal(err,null); //console.log("results :" +JSON.stringify(results));
+		});
+		minibankDAO.genericInsertOne('operations',{"compte" : ordreVirement.numCptDeb,"label" : "debit (virement)","montant" : -ordreVirement.montant,"dateOp" : currentDate()}, function(err,result){
+			assert.equal(err,null); console.log("result :" +JSON.stringify(result));
+		});
+	});
+	minibankDAO.genericFindById('comptes' , { '_id' : ordreVirement.numCptCred }  , function(err,cptCred) {
+		nouveauSolde = cptCred.solde + Number(ordreVirement.montant);
+		minibankDAO.genericUpdateOne('comptes',ordreVirement.numCptCred , { 'solde' : nouveauSolde }, function(err,results){
+			assert.equal(err,null); //console.log("results :" +JSON.stringify(results));
+		});
+		minibankDAO.genericInsertOne('operations',{"compte" : ordreVirement.numCptCred,"label" : "credit (virement)","montant" : +ordreVirement.montant,"dateOp" : currentDate()}, function(err,result){
+			assert.equal(err,null); console.log("result :" +JSON.stringify(result));
+		});
+	});
     if(true) // !!!  PEAUFINER ULTERIEUREMENT LES REMONTEES d'ERREURS !!!!
 		ordreVirement.ok= true;	
 	else
 		ordreVirement.ok= false;	
     res.send(ordreVirement);    // send  back with ok = true or false
 });
-
-
 
 // GET (array) /minibank/comptes?numClient=1
 app.get('/minibank/comptes', function(req, res,next) {

@@ -4,7 +4,8 @@
   "dependencies": {
     "express": "~3.3",
 	"mongodb" : "~2.0" ,
-	"q" : "~1.4"
+	"q" : "~1.4" ,
+	"mongoose" : "~4.3" 
   },
   "description": "minibank rest web services (json) for angular-js",
   "main": "minibank_rest_server.js",

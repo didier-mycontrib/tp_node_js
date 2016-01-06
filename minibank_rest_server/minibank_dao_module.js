@@ -3,7 +3,49 @@
 var EventEmitter = require('events').EventEmitter;
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
+var mongoose = require('mongoose');
 var assert = require('assert');
+
+
+/************ Mongoose shemas and Models (may be in a model module) **********************/
+
+	  compteSchema = mongoose.Schema({
+		_id: Number ,
+		numero: Number ,
+		label: String ,
+		solde: Number 
+	});
+	compteSchema.methods.addIdAlias = function () { this.numero = this._id; }
+  
+	Compte = mongoose.model('comptes', compteSchema);
+	/* (simple test)
+	var cpt1 = new Compte({ "_id" : 1 , "label": 'compte 1' });
+	console.log(JSON.stringify(cpt1)); 
+	*/
+	 clientSchema = mongoose.Schema({
+		_id: Number ,
+		numero: Number ,
+		comptes : [ Number ] ,
+		nom: String ,
+		prenom: String,  
+		adresse: { idAdr: Number , rue: String, codePostal: String , ville : String } ,
+		telephone: String,  
+		email: String
+	});
+	clientSchema.methods.addIdAlias = function () { this.numero = this._id; }
+  
+	Client = mongoose.model('clients', clientSchema);
+	
+	operationSchema = mongoose.Schema({
+		numero: Number ,
+		compte: Number ,
+		label: String ,
+		montant: String ,
+		dateOp: Date 
+	});//with _id of type "ObjectId" by default for enabled auto generated id when .save() !!!!
+	operationSchema.methods.addIdAlias = function () { this.numero = this._id; }
+  
+	Operation = mongoose.model('operations', operationSchema);
 
 /********************** MyMongoDbConnector ******************************/
 
@@ -14,11 +56,26 @@ function MyMongoDbConnector(dbUrl) {
 	  console.log("default dbUrl = " + this.dbUrl);
   }
   this.simpleConnect=myMongoDbConnectorConnect;
+  this.initMongoose = myMongoDbConnectorMongooseInit;
 }
 
 
+var myMongoDbConnectorMongooseInit = function(){
+
+
+this.mongooseDB = mongoose.connection;
+
+this.mongooseDB.on('error', console.error);
+this.mongooseDB.once('open', function() {
+  
+});
+
+mongoose.connect(this.dbUrl);
+}
+
+//pour éventuelle utilisation parallèle sans mongoose:
 var myMongoDbConnectorConnect = function(callback_with_db) {
-  var that = this;
+ 
   MongoClient.connect(this.dbUrl, function(err, db) {
 	  if(err!=null) {
 		  console.log("mongoDb connection error = " + err);
@@ -30,6 +87,8 @@ var myMongoDbConnectorConnect = function(callback_with_db) {
 }
 
 var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector();
+myDefaultGlobalMongoDbConnector.initMongoose();
+
 
 /**********************  MinibankDAO ******************************/
 
@@ -44,6 +103,7 @@ function MinibankDAO(mongoDbConnector) {
   this.genericFind=genericFind;
   this.genericUpdateOne=genericUpdateOne;
   this.genericInsertOne=genericInsertOne;
+  this.genericInsertPersistentOne=genericInsertPersistentOne;
   
   this.findComptesOfClient= findComptesOfClient;
   /*
@@ -79,7 +139,7 @@ var findComptesOfClient = function(numCli , callback_with_err_and_array_of_compt
 			   //console.log("sub request findCompteById with queryCpt  = " + JSON.stringify(queryCpt));
 			   db.collection('comptes').findOne(queryCpt , function(err, item) {
 				   nbSubLoad++;
-				   item['numero']=item['_id'];//addAliasField
+				   item['numero']=item['_id'];//addAliasField ( yourSchema.virtual('numero').get(function() { return this._id; }); with mongoose)
 				   cli.comptes[nbSubLoad-1]=item;
 				   //console.log("compte="+JSON.stringify(item) + "in sub request with nbSubLoad=" + nbSubLoad);
 				   if(nbSubLoad==cli.comptes.length){					
@@ -95,16 +155,16 @@ var findComptesOfClient = function(numCli , callback_with_err_and_array_of_compt
    });
 };
 
-var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_results) {
-     this.mongoDbConnector.simpleConnect( function(db) {
-	   db.collection(collectionName).updateOne( { '_id' : id }, { $set :  changes } , function(err, results) {
+var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_changedItem) {
+
+mongoose.model(collectionName).findByIdAndUpdate(id, changes , function(err, changedItem) {
 		  if(err!=null) {
 		  console.log("genericUpdateOne error = " + err);
 	      } 
-		   callback_with_err_and_results(err,results);
-		   db.close();
+		  console.log("changedItem="+JSON.stringify(changedItem));
+		   callback_with_err_and_changedItem(err,changedItem);
 		});
-   });
+
 };
 
 var genericInsertOne = function(collectionName,newOne,callback_with_err_and_newId) {
@@ -120,6 +180,18 @@ var genericInsertOne = function(collectionName,newOne,callback_with_err_and_newI
 		  db.close();
 		});
    });
+};
+
+var genericInsertPersistentOne = function(newPersistentOne,callback_with_err_and_newId) {
+	newPersistentOne.save( function(err) {
+		  if(err!=null) {
+		  console.log("genericInsertPersistentOne error = " + err);
+		  newId=null;
+	      } 
+		  else {newId=newPersistentOne._id;
+		  }
+		  callback_with_err_and_newId(err,newId);
+		});
 };
 
 var genericFindList = function(collectionName,query,callback_with_err_and_array) {
@@ -142,22 +214,19 @@ var findAllComptes = function(callback_with_err_and_array_of_comptes) {
 };
 */
 
-var genericFindById = function(collectionName,query, callback_with_err_and_item) {
-   //console.log("genericFindById with query  = " + JSON.stringify(query));
-   this.mongoDbConnector.simpleConnect( function(db) {
-	   db.collection(collectionName).findOne(query , function(err, item) {
-		  if(err!=null) {
-		  console.log("genericFindById error = " + err);
-	      }
-	       assert.equal(null, err); 
-		   if(item!=null){
-		     item['numero']=item['_id'];//addAliasField
-		   }
-		   callback_with_err_and_item(err,item);
-		   //console.log("item="+JSON.stringify(item) + " before db.close()");
-		   db.close();
-		});
-   });
+var genericFindById = function(collectionName,query, callback_with_err_and_item) {	  
+		   mongoose.model(collectionName).findOne(query , function (err, item) {
+			if(err!=null) {
+			  console.log("genericFindById error = " + err);
+			  }
+			   
+			   assert.equal(null, err); 
+			   if(item!=null){
+				 item.addIdAlias();	 //or item['numero']=item['_id'];//addAliasField 
+				 //console.log("genericFindById with query  = " + JSON.stringify(query) + "and item=" +JSON.stringify(item) );
+			   }
+			   callback_with_err_and_item(err,item);
+			});	  
 };
 /*
 var findCompteById = function(numCpt, callback_with_err_and_compte) {
@@ -187,7 +256,7 @@ var genericFind = function(collectionName,query,callback_with_err_and_object) {
 var addAliasFieldInCollection = function(coll, fieldName,aliasName){
 	 for(i=0;i<coll.length;i++){
 		 var e= coll[i];
-		e[aliasName]=e[fieldName];
+		e[aliasName]=e[fieldName];//( yourSchema.virtual('numero').get(function() { return this._id; }); with mongoose)
 	}	
 };
 

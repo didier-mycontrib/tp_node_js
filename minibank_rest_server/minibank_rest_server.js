@@ -101,8 +101,8 @@ app.post('/minibank/virement', function(req, res,next) {
 			minibankDAO.genericUpdateOne('comptes',Number(cpt._id) , { 'solde' : nouveauSolde }, function(err,results){
 				if(err)  deferred.reject(err);
 			});
-			var newDebOperation = {"compte" : cpt._id ,"label" : debiterOuCrediter +" (virement)","montant" : montant * coeff,"dateOp" : currentDate()};
-			minibankDAO.genericInsertOne('operations',newDebOperation, function(err,newId){
+			var newOperation = new Operation({"compte" : cpt._id ,"label" : debiterOuCrediter +" (virement)","montant" : montant * coeff,"dateOp" : currentDate()});
+			minibankDAO.genericInsertPersistentOne(newOperation, function(err,newId){
 				if(err)  deferred.reject(err);
 				else deferred.resolve("new operation inserted with _id=" + newId );
 			});

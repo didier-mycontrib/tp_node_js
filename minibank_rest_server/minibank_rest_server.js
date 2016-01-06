@@ -11,6 +11,8 @@ var assert = require('assert');
 
 //express framework manage basic route in server side with app.get() , app.post() , app.delete() , ...
 
+app.use(express.bodyParser()); //to parse JSON input data (req.body)
+
 // CORS enabled with express/node-js :
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -52,6 +54,46 @@ var sendGenericJsonExpressResponse = function(collectionName,query,res){
 	}
 }
 
+// POST /minibank/verifyAuth
+app.post('/minibank/verifyAuth', function(req, res,next) {
+	var verifAuth = req.body; // JSON input data with ok = null
+	console.log("verifAuth :" +JSON.stringify(verifAuth)); 
+    if(verifAuth.password == ("pwd" + verifAuth.numClient) )
+		verifAuth.ok= true;	
+	else
+		verifAuth.ok= false;	
+    res.send(verifAuth);    // send  back with ok = true or false
+});
+
+// POST /minibank/virement
+app.post('/minibank/virement', function(req, res,next) {
+	var ordreVirement = req.body; // JSON input data with ok = null
+	console.log("ordreVirement :" +JSON.stringify(ordreVirement)); 
+	minibankDAO.genericFindById('comptes' , { '_id' : ordreVirement.numCptDeb }  , function(err,cptDeb) {
+		nouveauSolde = cptDeb.solde - Number(ordreVirement.montant);
+		minibankDAO.genericUpdateOne('comptes',ordreVirement.numCptDeb , { 'solde' : nouveauSolde }, function(err,results){
+			assert.equal(err,null); //console.log("results :" +JSON.stringify(results));
+		});
+		minibankDAO.genericInsertOne('operations',{"compte" : ordreVirement.numCptDeb,"label" : "debit (virement)","montant" : -ordreVirement.montant,"dateOp" : currentDate()}, function(err,result){
+			assert.equal(err,null); console.log("result :" +JSON.stringify(result));
+		});
+	});
+	minibankDAO.genericFindById('comptes' , { '_id' : ordreVirement.numCptCred }  , function(err,cptCred) {
+		nouveauSolde = cptCred.solde + Number(ordreVirement.montant);
+		minibankDAO.genericUpdateOne('comptes',ordreVirement.numCptCred , { 'solde' : nouveauSolde }, function(err,results){
+			assert.equal(err,null); //console.log("results :" +JSON.stringify(results));
+		});
+		minibankDAO.genericInsertOne('operations',{"compte" : ordreVirement.numCptCred,"label" : "credit (virement)","montant" : +ordreVirement.montant,"dateOp" : currentDate()}, function(err,result){
+			assert.equal(err,null); console.log("result :" +JSON.stringify(result));
+		});
+	});
+    if(true) // !!!  PEAUFINER ULTERIEUREMENT LES REMONTEES d'ERREURS !!!!
+		ordreVirement.ok= true;	
+	else
+		ordreVirement.ok= false;	
+    res.send(ordreVirement);    // send  back with ok = true or false
+});
+
 // GET (array) /minibank/comptes?numClient=1
 app.get('/minibank/comptes', function(req, res,next) {
 	var numClient = req.query.numClient;
@@ -68,3 +110,21 @@ app.get('/minibank/comptes', function(req, res,next) {
 app.listen(8282 , function () {
   console.log("minibank rest server listening at 8282");
 });
+
+function currentDate(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; //January is 0!
+	var yyyy = today.getFullYear();
+
+	if(dd<10) {
+		dd='0'+dd
+	} 
+
+	if(mm<10) {
+		mm='0'+mm
+	} 
+
+	today = yyyy + "-" + mm + "-" + dd;
+	return today;
+}

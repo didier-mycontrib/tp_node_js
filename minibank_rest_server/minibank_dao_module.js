@@ -41,6 +41,8 @@ function MinibankDAO(mongoDbConnector) {
   this.genericFindList=genericFindList;
   this.genericFindById=genericFindById;
   this.genericFind=genericFind;
+  this.genericUpdateOne=genericUpdateOne;
+  this.genericInsertOne=genericInsertOne;
   
   this.findComptesOfClient= findComptesOfClient;
   /*
@@ -88,6 +90,30 @@ var findComptesOfClient = function(numCli , callback_with_err_and_array_of_compt
 		   //console.log("cli="+JSON.stringify(cli) + " before db.close()");
 		  //db.close() not before end of subRequest async loop
 		   }
+		});
+   });
+};
+
+var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_results) {
+     this.mongoDbConnector.simpleConnect( function(db) {
+	   db.collection(collectionName).updateOne( { '_id' : id }, { $set :  changes } , function(err, results) {
+		  if(err!=null) {
+		  console.log("genericUpdateOne error = " + err);
+	      } 
+		   callback_with_err_and_results(err,results);
+		   db.close();
+		});
+   });
+};
+
+var genericInsertOne = function(collectionName,newOne,callback_with_err_and_result) {
+     this.mongoDbConnector.simpleConnect( function(db) {
+	   db.collection(collectionName).insertOne( newOne , function(err, result) {
+		  if(err!=null) {
+		  console.log("genericInsertOne error = " + err);
+	      } 
+		   callback_with_err_and_result(err,result);
+		   db.close();
 		});
    });
 };

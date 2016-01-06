@@ -40,12 +40,15 @@ function MinibankDAO(mongoDbConnector) {
   }
   this.genericFindList=genericFindList;
   this.genericFindById=genericFindById;
+  this.genericFind=genericFind;
   
+  this.findComptesOfClient= findComptesOfClient;
+  /*
   this.findAllComptes = findAllComptes;
   this.findCompteById = findCompteById;
-  this.findComptesOfClient= findComptesOfClient;
   this.findOperations=findOperations;
   this.findClientById=findClientById;
+  */
 }
 
 
@@ -99,14 +102,15 @@ var genericFindList = function(collectionName,query,callback_with_err_and_array)
 		});
    });
 };
-
+/*
 var findOperations = function(numCpt,callback_with_err_and_array_of_operations) {
-   this.genericFindList('operations',{ '_id' : Number(numCpt) },callback_with_err_and_array_of_operations);
+   this.genericFindList('operations',{ 'compte' : Number(numCpt) },callback_with_err_and_array_of_operations);
 };
 
 var findAllComptes = function(callback_with_err_and_array_of_comptes) {
     this.genericFindList('comptes',{},callback_with_err_and_array_of_comptes);
 };
+*/
 
 var genericFindById = function(collectionName,query, callback_with_err_and_item) {
    //console.log("genericFindById with query  = " + JSON.stringify(query));
@@ -123,7 +127,7 @@ var genericFindById = function(collectionName,query, callback_with_err_and_item)
 		});
    });
 };
-
+/*
 var findCompteById = function(numCpt, callback_with_err_and_compte) {
    this.genericFindById('comptes',{ '_id' : Number(numCpt) },callback_with_err_and_compte);
 };
@@ -131,7 +135,20 @@ var findCompteById = function(numCpt, callback_with_err_and_compte) {
 var findClientById = function(numCli, callback_with_err_and_client) {
    this.genericFindById('clients',{ '_id' : Number(numCli) },callback_with_err_and_client);
 };
+*/
 
+var genericFind = function(collectionName,query,callback_with_err_and_object) {
+	returnArray = true;
+	for(var e in query){
+		if (e == "_id"){
+			returnArray = false;
+		}
+	}
+	if(returnArray)
+		return  this.genericFindList(collectionName,query,callback_with_err_and_object);
+	else
+		return  this.genericFindById(collectionName,query,callback_with_err_and_object);
+}
 
 /**************** util ********************/
 

@@ -1,0 +1,80 @@
+   <html >
+     <head>
+	        <script src="lib/jquery-2.1.4.min.js"></script>
+			<script>
+			
+			function parseResponse1(response){
+				 document.getElementById('jsonpRes1').innerHTML = JSON.stringify(response);
+			}
+			
+			function parseResponse2(response){
+				 document.getElementById('jsonpRes2').innerHTML = JSON.stringify(response);
+			}
+			
+			function parseResponse3(response){
+				 document.getElementById('jsonpRes3').innerHTML = JSON.stringify(response);
+			}
+			
+			function parseResponse4(response){
+				 document.getElementById('jsonpRes4').innerHTML = JSON.stringify(response);
+			}
+			
+			function dynamicAddJSONPscript(url_with_callback){
+				var script = document.createElement('script');
+				script.src = url_with_callback;
+				var headDomNode = document.getElementsByTagName('head')[0];
+				headDomNode.appendChild(script);
+				headDomNode.removeChild(script);
+			}
+			
+			function dynamicJQueryJsonpCall(url,query,secondLevelCallbackName){
+			          $.ajax({
+						url: url,
+ 
+						// The name of the callback parameter ('callback' for ?callback=jqueryDynamicIndirectCallback)
+						jsonp: "callback",
+					 
+						// Tell jQuery we're expecting JSONP
+						dataType: "jsonp",
+					 
+						data:  query,
+							
+					 
+						// Work with the response (after indirect jquery Dynamic jsonp Callback )
+						success: function( response ) {
+							console.log( response ); // server response
+							//parseResponse3(response);  //my second level callback
+							window[secondLevelCallbackName](response); //my second level callback
+						}
+					});
+			}
+			</script>
+     </head>
+     <body>
+	
+       <h3> JSONP test <h3>
+	   <a href="http://localhost:8282/devises/3?callback=parseResponse1"> http://localhost:8282/devises/3?callback=parseResponse1 </a>
+	   <hr/>
+	   Result of (static script) JSONP callback 'parseResponse1' :<br/><br/>
+	   <div id="jsonpRes1">
+	   </div>
+	   
+		<script type="application/javascript"
+				src="http://localhost:8282/devises/3?callback=parseResponse1">
+		</script>
+		
+		<hr/>
+		<input type='button' value="dynamic JSONP Call (without jQuery)" onclick="dynamicAddJSONPscript('http://localhost:8282/devises/1?callback=parseResponse2');" /><br/><br/>
+		<div id="jsonpRes2">
+	   </div>
+	   
+	   <hr/>
+		<input type='button' value="dynamic JSONP Call (with jQuery)" onclick="dynamicJQueryJsonpCall('http://localhost:8282/devises/4','', 'parseResponse3');" /><br/><br/>
+		<div id="jsonpRes3">
+	   </div>
+	   <br/>
+	   <input type='button' value="dynamic JSONP Call (with jQuery) 2 / list" onclick="dynamicJQueryJsonpCall('http://localhost:8282/devises/0','nbDevises=3', 'parseResponse4');" /><br/><br/>
+		<div id="jsonpRes4">
+	   </div>
+      </body>
+     </html>

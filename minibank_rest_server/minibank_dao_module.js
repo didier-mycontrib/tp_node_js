@@ -86,7 +86,8 @@ var myMongoDbConnectorConnect = function(callback_with_db) {
 	});
 }
 
-var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector();
+//var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector();
+var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector("mongodb://powerUser:myPwd@ds041494.mongolab.com:41494/my_mongo_db");
 myDefaultGlobalMongoDbConnector.initMongoose();
 
 

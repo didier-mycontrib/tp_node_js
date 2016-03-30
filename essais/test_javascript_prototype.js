@@ -13,8 +13,8 @@ Client.prototype.liveIn = function(otherContry) { this.country = otherContry; } 
 
 function methDireBonjour(){
     console.log("Bonjour, mon nom est "+this.name);
-	console.log("my default address is "+this.address);
-	console.log("my default country is "+this.country);
+	console.log("my address is "+this.address);
+	console.log("my country is "+this.country);
 };
 
 function methShowInternal(){

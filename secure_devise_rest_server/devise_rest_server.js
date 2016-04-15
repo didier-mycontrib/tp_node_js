@@ -17,6 +17,7 @@ app.use(express.bodyParser()); //to parse JSON input data (req.body)
 // CORS enabled with express/node-js :
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS"); //default: GET, ...
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -33,8 +34,48 @@ app.get('/devise', function(req, res , next) {
 
 
 // GET /devise/devises?code=EUR
+// GET /devise/devises?name=euro
+// GET /devise/devises --> all devises
 app.get('/devise/devises', function(req, res,next) {
-	sendGenericJsonExpressResponse('devises', { 'code' : req.query.code },res);	
+	if(req.query.code != null)
+	   sendGenericJsonExpressResponse('devises', { 'code' : req.query.code },res);	
+   else if(req.query.name != null)
+	   sendGenericJsonExpressResponse('devises', { 'name' : req.query.name },res);
+    else
+		sendGenericJsonExpressResponse('devises', { },res);
+});
+
+// GET /devise/devises/1
+app.get('/devise/devises/:numero', function(req, res,next) {
+	sendGenericJsonExpressResponse('devises', { '_id' : Number(req.params.numero) },res);
+});
+
+// GET /devise/convert?amount=50&src=EUR&target=USD
+app.get('/devise/convert', function(req, res,next) {
+	var amount = Number( req.query.amount );
+	var srcCode = req.query.src ; var srcExchange = null;
+	var targetCode = req.query.target ; var targetExchange = null;
+	//console.log('amount='+amount + ' , srcCode=' + srcCode + ' , targetCode=' + targetCode);
+	deviseDAO.genericFind('devises', { 'code' : srcCode },onSrcReady);
+	deviseDAO.genericFind('devises', { 'code' : targetCode },onTargetReady);
+	function onSrcReady(err,jsObject){
+		srcExchange = jsObject[0].exchange_rate;
+		if(targetExchange!=null)
+			onConvResultReady();
+	}
+	function onTargetReady(err,jsObject){
+		targetExchange = jsObject[0].exchange_rate;
+		if(srcExchange!=null)
+			onConvResultReady();
+	}
+	function onConvResultReady(){
+		var convResult = amount * targetExchange / srcExchange;
+		//res.setHeader('Content-Type', 'application/json');
+		res.setHeader('Content-Type', 'text/plain');
+		//console.log('convResult='+convResult );
+		res.write(convResult.toString());
+	    res.end();
+	}
 });
 
 
@@ -48,89 +89,26 @@ var sendGenericJsonExpressResponse = function(collectionName,query,res){
 	}
 }
 
-/*
 
-// POST /minibank/verifyAuth
-app.post('/minibank/verifyAuth', function(req, res,next) {
-	var verifAuth = req.body; // JSON input data with ok = null
-	console.log("verifAuth :" +JSON.stringify(verifAuth)); 
-    if(verifAuth.password == ("pwd" + verifAuth.numClient) )
-		verifAuth.ok= true;	
-	else
-		verifAuth.ok= false;	
-    res.send(verifAuth);    // send  back with ok = true or false
-});
 
-// POST /minibank/virement
-app.post('/minibank/virement', function(req, res,next) {
-	var ordreVirement = req.body; // JSON input data with ok = null
-	console.log("ordreVirement :" +JSON.stringify(ordreVirement));
-
-    Q().then(loadCpt(Number(ordreVirement.numCptDeb)))
-    .then(updateCpt("debiter",Number(ordreVirement.montant)))
-    .then(console.log)
-    .catch(console.log);
-	
-	Q().then(loadCpt(Number(ordreVirement.numCptCred)))
-    .then(updateCpt("crediter",Number(ordreVirement.montant)))
-    .then(console.log)
-    .catch(console.log);
- 
-	 function loadCpt(numCpt){	 //wrapper function around function pour promesse avec argument spécifique (lors de then(...))
-		 return function(){
-			var deferred = Q.defer();		
-			minibankDAO.genericFindById('comptes' , { '_id' : numCpt } ,deferred.makeNodeResolver());
-			return deferred.promise;
-		  }
-	 }
-	 function updateCpt(debiterOuCrediter,montant){	 //wrapper function around function pour promesse avec argument spécifique (lors de then(...))
-		return	function (cpt){
-			var deferred = Q.defer();
-			nouveauSolde = cpt.solde;
-			if(debiterOuCrediter=="debiter"){
-				nouveauSolde -=  montant; coeff= -1;
-			}
-			if(debiterOuCrediter=="crediter"){
-				nouveauSolde +=  montant; coeff= +1;
-			}
-			minibankDAO.genericUpdateOne('comptes',Number(cpt._id) , { 'solde' : nouveauSolde }, function(err,results){
-				if(err)  deferred.reject(err);
-			});
-			var newOperation = new Operation({"compte" : cpt._id ,"label" : debiterOuCrediter +" (virement)","montant" : montant * coeff,"dateOp" : currentDate()});
-			minibankDAO.genericInsertPersistentOne(newOperation, function(err,newId){
-				if(err)  deferred.reject(err);
-				else deferred.resolve("new operation inserted with _id=" + newId );
-			});
-			return deferred.promise;
+// PUT /devise/devises
+app.put('/devise/devises', function(req, res,next) {
+	var deviseToUpdate = req.body; // JSON input data (to update)
+	console.log("devise to update :" +JSON.stringify(deviseToUpdate)); 
+    deviseDAO.genericUpdateOne('devises', Number(deviseToUpdate._id),
+	                          { "code" : deviseToUpdate.code,
+							    "name" : deviseToUpdate.name,
+								"exchange_rate" : Number(deviseToUpdate.exchange_rate)},
+								callback_with_err_and_changedDevise);
+	function callback_with_err_and_changedDevise(err,jsObject){
+		if(err!=null)
+			console.log("devise err :" +err); 
+		else{
+		  // console.log("updated devise :" +JSON.stringify(jsObject)); 
+		  res.send(jsObject);    // send  back updated data
 		}
-	 }
-	
-	
-	
-    if(true) // !!!  PEAUFINER ULTERIEUREMENT LES REMONTEES d'ERREURS !!!!
-		ordreVirement.ok= true;	
-	else
-		ordreVirement.ok= false;	
-    res.send(ordreVirement);    // send  back with ok = true or false
+	}
 });
-*/
-
-/*
-
-// GET (array) /minibank/comptes?numClient=1
-app.get('/minibank/comptes', function(req, res,next) {
-	var numClient = req.query.numClient;
-	console.log("comptes pour numClient=" + numClient);
-    res.setHeader('Content-Type', 'application/json');
-	minibankDAO.findComptesOfClient(numClient,onArrayResultReady);
-	function onArrayResultReady(err,listeComptes){
-		res.write(JSON.stringify(listeComptes));
-	    res.end();
-	}	
-});
-
-*/
-
 
 app.listen(8282 , function () {
   console.log("minibank rest server listening at 8282");

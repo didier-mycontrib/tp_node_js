@@ -52,7 +52,7 @@ var assert = require('assert');
 function MyMongoDbConnector(dbUrl) {
   this.dbUrl = dbUrl;
   if(this.dbUrl == null) {	  
-	  this.dbUrl = 'mongodb://localhost:27017/test' ; //by default
+	  this.dbUrl = 'mongodb://127.0.0.1:27017/test' ; //by default (NB: 127.0.0.1 instead of localhost if no network)
 	  console.log("default dbUrl = " + this.dbUrl);
   }
   this.simpleConnect=myMongoDbConnectorConnect;
@@ -86,8 +86,8 @@ var myMongoDbConnectorConnect = function(callback_with_db) {
 	});
 }
 
-//var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector();
-var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector("mongodb://powerUser:myPwd@ds041494.mongolab.com:41494/my_mongo_db");
+var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector();
+//var myDefaultGlobalMongoDbConnector = new MyMongoDbConnector("mongodb://powerUser:myPwd@ds041494.mongolab.com:41494/my_mongo_db");
 myDefaultGlobalMongoDbConnector.initMongoose();
 
 
@@ -158,7 +158,7 @@ var findComptesOfClient = function(numCli , callback_with_err_and_array_of_compt
 
 var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_changedItem) {
 
-mongoose.model(collectionName).findByIdAndUpdate(id, changes , function(err, changedItem) {
+mongoose.model(collectionName).findByIdAndUpdate(id, changes , { "new" : true }, function(err, changedItem) {
 		  if(err!=null) {
 		  console.log("genericUpdateOne error = " + err);
 	      } 

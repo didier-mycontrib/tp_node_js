@@ -66,7 +66,7 @@ pause
 function MyMongoDbConnector(dbUrl) {
   this.dbUrl = dbUrl;
   if(this.dbUrl == null) {	  
-	  this.dbUrl = 'mongodb://localhost:27017/test' ; //by default
+	  this.dbUrl = 'mongodb://127.0.0.1:27017/test' ; //by default
 	  console.log("default dbUrl = " + this.dbUrl);
   }
   this.simpleConnect=myMongoDbConnectorConnect;
@@ -120,12 +120,6 @@ function DeviseDAO(mongoDbConnector) {
   this.genericInsertOne=genericInsertOne;
   this.genericInsertPersistentOne=genericInsertPersistentOne;
   
-  /*
-  this.findAllComptes = findAllComptes;
-  this.findCompteById = findCompteById;
-  this.findOperations=findOperations;
-  this.findClientById=findClientById;
-  */
 }
 
 
@@ -133,7 +127,7 @@ function DeviseDAO(mongoDbConnector) {
 
 var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_changedItem) {
 
-mongoose.model(collectionName).findByIdAndUpdate(id, changes , function(err, changedItem) {
+mongoose.model(collectionName).findByIdAndUpdate(id, changes , { "new" : true } , function(err, changedItem) {
 		  if(err!=null) {
 		  console.log("genericUpdateOne error = " + err);
 	      } 
@@ -180,15 +174,7 @@ var genericFindList = function(collectionName,query,callback_with_err_and_array)
 		});
    });
 };
-/*
-var findOperations = function(numCpt,callback_with_err_and_array_of_operations) {
-   this.genericFindList('operations',{ 'compte' : Number(numCpt) },callback_with_err_and_array_of_operations);
-};
 
-var findAllComptes = function(callback_with_err_and_array_of_comptes) {
-    this.genericFindList('comptes',{},callback_with_err_and_array_of_comptes);
-};
-*/
 
 var genericFindById = function(collectionName,query, callback_with_err_and_item) {	  
 		   mongoose.model(collectionName).findOne(query , function (err, item) {
@@ -204,15 +190,8 @@ var genericFindById = function(collectionName,query, callback_with_err_and_item)
 			   callback_with_err_and_item(err,item);
 			});	  
 };
-/*
-var findCompteById = function(numCpt, callback_with_err_and_compte) {
-   this.genericFindById('comptes',{ '_id' : Number(numCpt) },callback_with_err_and_compte);
-};
 
-var findClientById = function(numCli, callback_with_err_and_client) {
-   this.genericFindById('clients',{ '_id' : Number(numCli) },callback_with_err_and_client);
-};
-*/
+
 
 var genericFind = function(collectionName,query,callback_with_err_and_object) {
 	returnArray = true;

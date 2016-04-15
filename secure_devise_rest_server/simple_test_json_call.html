@@ -1,13 +1,97 @@
    <html >
-     <head>
-	       	<script>
-			
-			</script>
-     </head>
+    <head>
+	<script src="jquery-2.2.1.js"></script>
+    <script>
+	  var deviseList;
+	  var deviseIdSelected;
+	  var deviseSelected;
+	  
+	  function display_selected_devise(){
+	             $("#spanMsg").html( "selected devise:" + deviseIdSelected) ;
+				 $('#spanId').html(deviseSelected._id);
+				 $('#txtCode').val(deviseSelected.code);
+				 $('#txtName').val(deviseSelected.name);
+				 $('#txtExchangeRate').val(deviseSelected.exchange_rate);
+	  }
+	
+	  function local_update_selected_devise(){	             
+				deviseSelected.code = $('#txtCode').val();
+				deviseSelected.name = $('#txtName').val();
+				deviseSelected.exchange_rate= $('#txtExchangeRate').val();
+	  }
+	  
+      $(function() {
+	 	  
+	    $.ajax({
+           type: "GET",
+           url: "http://localhost:8282/devise/devises",
+		   success: function (data) {
+               if (data) {
+			       //alert(JSON.stringify(data));
+			       deviseList = data;
+				   for(deviseIndex in deviseList){
+				       var devise=deviseList[deviseIndex];
+					   if(deviseIndex==0)
+					      { deviseSelected = devise; deviseIdSelected = devise._id; }
+				       //alert(JSON.stringify(devise));
+				       $('#selDevise').append('<option  value="'+ devise._id +'">'+ devise.code + ' (' + devise.name + ')</option>');					   
+				   }
+				   display_selected_devise();
+               } else {
+                   $("#spanMsg").html("Cannot GET devises !");
+               }
+           }
+		   });
+        
+		
+		$('#btnUpdate').on('click',function(){
+		 //$("#spanMsg").html( "message in the bottle" ) ;
+		 local_update_selected_devise();
+		 $.ajax({
+           type: "PUT",
+           url: "http://localhost:8282/devise/devises",
+           dataType: "json",
+		   data: deviseSelected,
+           success: function (updatedData) {
+               if (updatedData) {
+                  $("#spanMsg").html("updated data (server side):" + JSON.stringify(updatedData));
+               } else {
+                   $("#spanMsg").html("Cannot PUT updated data");
+               }
+           }
+		   });
+		});
+	
+		
+		$('#selDevise').on('change',function(evt){
+		         deviseIdSelected = $(evt.target).val();
+				 for(deviseIndex in deviseList){
+				       var devise=deviseList[deviseIndex];
+					   if(devise._id == deviseIdSelected)
+					       deviseSelected  = devise;
+				 }
+				 display_selected_devise();
+		});
+      }); 
+   </script>
+   </head>
      <body>
 	
        <h3> JSON tests for devise app (node + express) <h3>
 	   <a href="http://localhost:8282/devise">welcome </a> <br/>
-	   <a href="http://localhost:8282/devise/devises?code=EUR"> details de la devise EUR </a> <br/>
-      </body>
+	   <a href="http://localhost:8282/devise/devises/1"> details de la devise de numero = _id = 1 </a> <br/>
+	   <a href="http://localhost:8282/devise/devises?code=EUR"> devises avec code=EUR </a> <br/>
+	   <a href="http://localhost:8282/devise/devises?name=dollar"> devises avec name=dollar </a> <br/>
+	   <a href="http://localhost:8282/devise/devises"> toutes les devises</a> <br/>
+	   <a href="http://localhost:8282/devise/convert?amount=50&src=EUR&target=USD"> 50 euros en dollar</a> <br/>
+      <hr/>
+	  devise (to update) : <select id="selDevise"> </select>
+	  <hr/>
+	  _id: <span id="spanId"></span> <br/>
+	  code : <input id="txtCode" type='text' /><br/>
+	  name : <input id="txtName" type='text' /><br/>
+	  exchange_rate : <input id="txtExchangeRate" type='text' /><br/>
+	  <input type='button' value="update devise" id="btnUpdate"/> <br/>
+	  <span id="spanMsg"></span> <br/>
+	  </body>
      </html>

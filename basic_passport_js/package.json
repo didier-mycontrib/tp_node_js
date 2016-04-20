@@ -1,0 +1,22 @@
+{
+  "name": "basic_nodejs_server",
+  "version": "0.1.0",
+  "dependencies": {
+     "express": "~3.3",
+	"mongodb" : "~2.0" ,
+	"q" : "~1.4" ,
+	"mongoose" : "~4.3" ,
+	"passport" : "~0.3.2",
+	"passport-local" : "~0.1.6" ,
+	"connect-flash" : "~0.1.1",  
+    "ejs" : "~2.4.1",
+    "bcrypt-nodejs" : "~0.0.3"
+  },
+  "description": "basic node_js server with passport js local stategy",
+  "main": "basic_nodejs_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "didier defrance",
+  "license": "ISC"
+}

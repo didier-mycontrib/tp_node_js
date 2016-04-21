@@ -6,32 +6,28 @@
 var express = require('express');
 
 var app = express(); //version (partie) non sécurisée (public , en lecture seule) sur 8282
-
+/*
 var passport = require('passport')
-  , JwtBearerStrategy  = require('passport-http-jwt-bearer').Strategy;
-
+  , LocalStrategy = require('passport-local').Strategy;
+*/
 var secureApp = express(); //version (partie) sécurisée (en mise à jour) sur 8383
 
 var mongoose = require('mongoose');
 var configDB = require('./app-config/database.js');
 var Devise   = require('./mongoose-model/devise').Devise;
 var User   = require('./mongoose-model/user').User;
-
+/*
 var configPassport = require('./app-config/passport.js');
-
+*/
 var morgan  = require("morgan"); //for login request
-var jwt     = require("jsonwebtoken"); //json web token 
+var jwt     = require("jsonwebtoken"); //json web token
 //var uuid = require('node-uuid'); //to generate a defaultSecretKey
 var assert = require('assert');
 var Q = require('q');
 
 //var generatedSecretKey = uuid.v4();
 //console.log("generatedSecretKey="+generatedSecretKey);
-//var defaultSecretKey = '3b91a7d3-5d7c-424b-bb31-8381b92883b8';
-//var secretKeyforHmac = Math.random().toString(36).replace(/[^a-z]+/g, '');//--> "iuvwtifkmrhpvi"
-//console.log("secretKeyforHmac="+secretKeyforHmac);
-
-var defaultSecretKey ='iuvwtifkmrhpvi'; 
+var defaultSecretKey = '3b91a7d3-5d7c-424b-bb31-8381b92883b8';
 var jwtSecretKey = process.env.JWT_SECRET_KEY | defaultSecretKey;
 
 //express framework manage basic route in server side with app.get() , app.post() , app.delete() , ...
@@ -64,10 +60,19 @@ mongoose.connect(configDB.url); // connect to our MongoDB database
 
 /* NB: pour securiser une API REST --> pas de cookie ni de session mais des TOKENS (JWT , ...) */
 
-configPassport.configure(passport,jwtSecretKey); //configuration d'une stratégie selon module config/passport.js
+//configPassport.configure(passport); //configuration d'une stratégie selon module config/passport.js
 
-secureApp.use(passport.initialize()); //indispensable pour passport-js
+//secureApp.use(passport.initialize()); //indispensable pour passport-js
 
+
+/*
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  else
+	  res.send(401);//Unauthorized
+    // Return error content: res.jsonp(...) or redirect: res.redirect('/login')
+}*/
 
 app.get('/devise', function(req, res , next) {
     res.setHeader('Content-Type', 'text/html');
@@ -144,11 +149,20 @@ var sendGenericJsonExpressArrayResponse = function(collectionName,query,res){
 	}
 }
 
-
+/*
+//POST login (to verify username/password)
+// (sans "flash message" et sans redirection vers /login en cas d'echec)
+secureApp.post('/login',
+  passport.authenticate('local'), //if authenticate fails --> return 401 / Unauthorized (by default) and the route stop here
+  function(req, res) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    res.end(JSON.stringify(req.user));
+  });
+ */
  
- // /login
- secureApp.post('/login', function(req, res) {
-	 console.log("login with username="+req.body.username + " and password=" + req.body.password);
+ secureApp.post('/authenticate', function(req, res) {
+	 console.log("authenticate with username="+req.body.username + " and password=" + req.body.password);
    // User.findOne({email: req.body.email, password: req.body.password}, function(err, user) {
 	User.findOne({username: req.body.username}, function(err, user) {
         if (err) {
@@ -157,7 +171,7 @@ var sendGenericJsonExpressArrayResponse = function(collectionName,query,res){
             if (user) {
 				if(user.validPassword(req.body.password)){
 					req.token=  jwt.sign(JSON.stringify(user.tokenPayload()), jwtSecretKey.toString());						
-					console.log("req.token created during login/authentication="+req.token);		
+					console.log("req.token created during authentication="+req.token);		
 				    res.json({ ok: true, msg: user.username + " successfully authenticated", token: req.token }); 
 				}
 				else{
@@ -169,8 +183,6 @@ var sendGenericJsonExpressArrayResponse = function(collectionName,query,res){
         }
     });
 });
-
-
 
 secureApp.post('/signin', function(req, res) {
 	console.log("signin with username="+req.body.username +" and password=" + req.body.password +" and email=" + req.body.email);
@@ -202,10 +214,15 @@ secureApp.post('/signin', function(req, res) {
     });
 });
 
-
-/*
-
-//ensureAuthorized REPLACED BY passport.authenticate('jwt-bearer', { session: false }) WITH passport-http-jwt-bearer
+secureApp.get('/simple_private_data', ensureAuthorized, function(req, res) {
+    User.findOne({token: req.token}, function(err, user) {
+        if (err) {
+            res.json({ok: false,msg: "Error occured: " + err });
+        } else {
+            res.json({ ok: true,msg: user });
+        }
+    });
+});
 
 function ensureAuthorized(req, res, next) {
     var bearerToken; // beared signifie porteur en francais --> jeton portant/vehiculant une information
@@ -231,20 +248,13 @@ function ensureAuthorized(req, res, next) {
         res.send(403);
     }
 }
-*/
 
-secureApp.get('/simple_private_data', 
- passport.authenticate('jwt-bearer', { session: false }), //if authenticate fails --> return 401 / Unauthorized (by default) and the route stop here
- function(req, res) {
-	   // If this function gets called, authentication was successful.
-       // `req.user` contains the authenticated user.
-        res.json({ ok: true,msg: req.user });
-    });
+
 
 
 
 // PUT /devise/devises
-secureApp.put('/devise/devises' , passport.authenticate('jwt-bearer', { session: false }) , fctPutDevise); //returning 401/Unautorized when auth failulre
+secureApp.put('/devise/devises' , fctPutDevise); //returning 401/Unautorized when auth failulre
 app.put('/devise/devises', fctPutDevise);  //ici en version parallèle non securisée pour Tp seulement (pas sur vrai projet)
 
 function fctPutDevise(req, res,next) {
@@ -268,7 +278,7 @@ function fctPutDevise(req, res,next) {
 
 //affichage des execptions non gérées:
 process.on('uncaughtException', function(err) {
-    console.log('Uncaught Exception in node js app : ' + err);
+    console.log(err);
 });
 
 app.listen(8282 , function () {
@@ -280,3 +290,20 @@ secureApp.listen(port , function () {
   console.log("secure devise rest server listening at " + port);
 });
 
+function currentDate(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; //January is 0!
+	var yyyy = today.getFullYear();
+
+	if(dd<10) {
+		dd='0'+dd
+	} 
+
+	if(mm<10) {
+		mm='0'+mm
+	} 
+
+	today = yyyy + "-" + mm + "-" + dd;
+	return today;
+}

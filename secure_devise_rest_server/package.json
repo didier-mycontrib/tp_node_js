@@ -6,7 +6,12 @@
 	"mongodb" : "~2.0" ,
 	"q" : "~1.4" ,
 	"mongoose" : "~4.3" ,
-	"passport" : "~0.3.2"
+	"passport" : "~0.3.2",
+	"passport-local" : "~0.1.6",
+	"node-uuid" : "~1.4.6",
+	 "morgan": "latest",
+	 "jsonwebtoken": "~5.7.0",
+	 "bcrypt-nodejs" : "~0.0.3"
   },
   "description": "secure_devise rest web services (json) for angular-js",
   "main": "devise_rest_server.js",

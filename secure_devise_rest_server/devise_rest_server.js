@@ -156,7 +156,7 @@ var sendGenericJsonExpressArrayResponse = function(collectionName,query,res){
         } else {
             if (user) {
 				if(user.validPassword(req.body.password)){
-					req.token=  jwt.sign(JSON.stringify(user.tokenPayload()), jwtSecretKey.toString());						
+					req.token=  jwt.sign(user.tokenPayload() , jwtSecretKey.toString() ,  {expiresIn: 3600 , issuer: 'devise_rest_server'} );	//expiresIn : 60 means in 60 s , issuer means émetterur	
 					console.log("req.token created during login/authentication="+req.token);		
 				    res.json({ ok: true, msg: user.username + " successfully authenticated", token: req.token }); 
 				}
@@ -170,6 +170,12 @@ var sendGenericJsonExpressArrayResponse = function(collectionName,query,res){
     });
 });
 
+/*
+Remarque sur structure du token (JWT)
+la partie payload/claim comportera généralement les champs "iat" (issue at time) , "iss" (issuer/emetteur) et "exp" (time d'expiration)
+jwt.sign() ne fonctionne bien que si le premier paramètre est un objet (pas une string , pas de JSON.stringify())
+                                  le troisième paramètre "options" est de type {expiresIn: 60, issuer: 'devise_rest_server'} (expiresIn 60 signifie dans 60 secondes)
+*/
 
 
 secureApp.post('/signin', function(req, res) {
@@ -192,7 +198,7 @@ secureApp.post('/signin', function(req, res) {
 						res.json({ok: false, msg: "cannot save newUser in database"});
 					}
 					else {
-						req.token = jwt.sign(JSON.stringify(user.tokenPayload()), jwtSecretKey.toString());
+						req.token = jwt.sign(user.tokenPayload(), jwtSecretKey.toString() ,  {expiresIn: 3600, issuer: 'devise_rest_server'});
 						console.log("req.token created during signin="+req.token);						
                         res.json({ok: true,msg: "new account " + user.username + " successfully created" , token: req.token });             
 					}

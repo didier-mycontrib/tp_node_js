@@ -1,0 +1,26 @@
+
+HTTP ==> HTTPS necessite autorisations CORS
+
+===================
+<script type="text/javascript">
+    if (window.location.protocol == "http:") {
+        var restOfUrl = window.location.href.substr(5);
+        window.location = "https:" + restOfUrl;
+    }
+</script>
+============================
+(avec angular js) :
+
+var forceSSL = function () {
+    if ($location.protocol() == 'http') {
+        var restOfUrl = $window.location.href.substr(5);
+        $window.location.href = "https:" + restOfUrl;
+    }
+};
+forceSSL(); //Attention (reload)
+==========================
+
+
+
+
+

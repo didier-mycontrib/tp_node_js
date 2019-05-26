@@ -1,0 +1,14 @@
+{
+  "name": "d2f-contrib-mongo-util",
+  "version": "1.0.1",
+  "description": "d2f-contrib-mongo_util library",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "didier defrance",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.0.1"
+  }
+}

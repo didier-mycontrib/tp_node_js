@@ -1,0 +1,52 @@
+/* tag , .class , #idElt,  parent > child , tag.withClass , ... */
+
+/* polices correctes : Times , Arial , Tahoma, Verdana */
+p { font-size: 14pt ;  font-family: "Tohama"; }
+
+.au-centre { text-align: center; }
+.justifie { text-align : justify; }
+.appuye { font-weight: bold;}
+.fondVert { background-color:   #5aa3e2 ; }
+.panel-default > .panel-heading { 
+   background-color:   #499de5;
+   color : white;
+}
+
+/* titre principal */
+.titre0 {  font-size: 18pt ; font-family: "Tahoma" ; font-weight: 500; }
+
+/* titres du menu principal */
+.titre1 { color: #499de5; font-size: 16pt ; font-family: "Tahoma" ; font-weight: 500; }
+
+/* sous titres des sous menus */
+.titre2 { color: #499de5; font-size: 14pt ; font-family: "Tahoma"; font-weight: 500; }
+
+
+/* p { font-size: 14pt ; }*/ /* vw = viewport width = unité équivalent à 1% de la largeur de la fenêtre */                     
+.acro { text-align: left; font-size: 14pt ; font-family: "Tahoma"; font-weight: 400; }
+div.acro > p::first-letter { color: #00a888; font-weight: bold;} /* vert */
+
+th { font-family: "Tohama"; color: #499de5; background-color: #EEEEEE; /* light grey */ ; font-size: 18pt ;padding : 5px;}
+td { font-family: "Tohama"; font-size:14pt  ; padding : 5px;}
+.pair { background-color: #EEEEEE;} /* light grey */
+.impair { background-color: white; } 
+
+
+.petit { font-size: 12pt;}
+.plusGrand { font-size: 16pt; }
+.ressortir{ font-family: arial; font-size: 18pt; font-weight: bold; font-style: italic; }
+.tailleNormale { font-size: 14pt; }
+
+.fondParDefaut{
+  background-color:  #FEFEFE; /* blanc */
+}
+
+
+.carousel-inner > .item > img,
+  .carousel-inner > .item > a > img {
+      min-width:200px;
+	  max-width:500px;
+	  height:300px;
+      margin: auto;
+  }
+ 

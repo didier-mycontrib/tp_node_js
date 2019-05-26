@@ -1,4 +1,5 @@
 REM node -v
 REM http://localhost:8282/...
-node devise_jsonp_server.js
+REM node devise_jsonp_server.js
+node first_express_server.js
 pause

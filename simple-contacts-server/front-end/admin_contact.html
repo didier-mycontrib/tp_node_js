@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Gestion des contacts</title>
+	<script src="js/jquery-2.2.4.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/admin_contact.js"></script> <!-- calling rest ws (nodeJs+express+mongoDB) -->
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<link rel="stylesheet" href="./css/styles.css">
+    
+</head>
+<body class="container">
+     <h3>Gestion des contacts </h3>
+	 <!--
+	 <u>filtrage des contacts:</u><br/>
+	 &nbsp;&nbsp;<input type="radio" checked name="filtreContact" value="nouveaux">nouveaux<br/>
+	 &nbsp;&nbsp;<input type="radio" name="filtreContact" value="tous">tous<br/>
+	 &nbsp;&nbsp;<input type="radio" name="filtreContact" value="recents">recents<br/> -->
+	 <input type="button" value="actualiser liste des contacts" id="btn_rechercher"/> <br/>
+	 <hr/>
+     <table border="2" id="tabContacts" >
+	   <thead>
+		  <tr><th>selection</th><th>date</th><th>nom</th><th>prenom</th><th>email</th><th>objet</th><th>message</th></tr>
+		</thead>
+		<tbody>
+		</tbody>
+	 </table>
+	 action: <input type="button" value="supprimer les contacts selectionnes" id="btn_supprimer"/> <br/>
+	 <span id="span_msg">...</span>
+	 
+</body>
+</html>
+  
+  
+  
+  

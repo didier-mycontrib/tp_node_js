@@ -1,0 +1,16 @@
+avec express 3.x:
+-----------------
+app.use(express.bodyParser()); //to parse JSON input data (req.body)
+
+evec express 3.y (récentes) et express 4:
+-----------------------------------------
+var bodyParser = require('body-parser');
+et 
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+
+

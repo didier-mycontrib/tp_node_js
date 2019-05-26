@@ -1,0 +1,13 @@
+Les versions 4.x et 5.x de sequelize necessite mysql2 plutot que mysql
+
+"dependencies": {
+   PAS DE  "mysql": "^2.17.1",
+    "sequelize": "^5.8.6"
+  }
+  
+ mais
+ 
+  "dependencies": {
+    "mysql2": "^1.6.5",
+    "sequelize": "^5.8.6"
+  }

@@ -1,0 +1,3 @@
+double click sur index.html pour visualiser le site web
+----
+pour modifier un fichier ".html" , se placer dessus et click droit / edit with notepad++

@@ -1,0 +1,55 @@
+  
+  <script src="js/contact.js"></script> <!-- calling rest ws (nodeJs+express+mongoDB) -->
+   <div class="panel panel-default">
+			<div class="panel-heading appuye">Me contacter</div>
+			<div class="panel-body">
+			
+			<form role="form" class="form-horizontal">
+			 
+			  <div class="form-group">
+				<label for="f_nom" class="control-label col-sm-3">Nom:</label>
+				<div class="col-sm-9">
+				    <input type="text" class="form-control" id="f_nom" />
+			    </div>
+			  </div>
+			  <div class="form-group">
+				<label for="f_prenom" class="control-label col-sm-3">Prénom:</label>
+				<div class="col-sm-9">
+				    <input type="text" class="form-control" id="f_prenom" />
+			    </div>
+			  </div>
+			   <div class="form-group">
+				<label for="f_email" class="control-label col-sm-3">E-mail:</label>
+				<div class="col-sm-9">
+				    <input type="email" class="form-control" id="f_email" placeholder="...@..." />
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="f_objet" class="control-label col-sm-3">Objet:</label>
+				<div class="col-sm-9">
+				    <input type="text" class="form-control" id="f_objet" />
+			    </div>
+			  </div>
+			  <div class="form-group">
+				<label for="f_message" class="control-label col-sm-3">Message:</label>
+				<div class="col-sm-9">
+				    <textarea rows="8" class="form-control" id="f_message" />
+			    </div>
+			  </div>
+			   <div class="form-group">
+				  <div class="col-sm-offset-3 col-sm-9">
+					<input  type="button" class="btn btn-default"  id="btn_envoyer" value="Envoyer" />
+				   </div>
+			   </div>
+			   <div class="form-group">
+				  <div class="col-sm-offset-3 col-sm-9">
+					<span  id="span_msg" >...</span>
+				   </div>
+			   </div>
+			</form>
+			
+			</div>
+       </div>
+
+  
+  

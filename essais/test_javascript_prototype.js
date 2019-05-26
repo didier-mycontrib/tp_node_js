@@ -23,20 +23,13 @@ console.log("this.constructor.prototype.address=" + this.constructor.prototype.a
 console.log("this.constructor.prototype.country=" + this.constructor.prototype.country);
 };
 
+var c0=new Client();
+c0.direBonjour();
+
 var c1 = new Client("c1");
-//c1.direBonjour();
 c1.liveIn("USA");
 //c1.country="United State of america";
-
-
-var c2 = new Client("c2");
-//c2.direBonjour();
-c2.liveIn("UK");
-
-
-
 c1.direBonjour();
-c2.direBonjour();
 /*
 console.log(c1.constructor.toString());
 console.log(c1.constructor.prototype.address);
@@ -44,30 +37,45 @@ console.log(c1.constructor.prototype.country);
 */
 c1.showInternal();
 
-console.log("*************  PSEUDO HERITAGE (assez fragile) entre Dog et Animal ***************");
+var c2 = new Client("c2");
+c2.liveIn("UK");
+c2.direBonjour();
 
-//Methode générique pour définir un "pseudo héritage" entre 2 "speudo classes" :
-var extendClass = function(child, parent) {
-    var Surrogate = function() {};    //surrogate est un mot anglais qui signifie "substitut" , "de substitution"
-    Surrogate.prototype = parent.prototype;
-    child.prototype = new Surrogate();
-};
 
-function Animal(){
-	//this.constructor.prototype.color="black"; //not working (too early for accessing this.constructor ?)
+
+
+console.log("************* SPEUDO HERITAGE (via prototype es5) entre Dog et Animal ***************");
+
+
+function Animal(name){
+	this.name=name;
 }
-Animal.prototype.name="no name";
-Animal.prototype.color="black";
+Animal.prototype.color="black";//default color
+Animal.prototype.weight=0;//default weight
 
-function Dog(type){
-	this.type=type;
+var a1=new Animal("animal 1");
+console.log("a1="+JSON.stringify(a1)); 
+console.log("Animal.prototype as jsonString="+JSON.stringify(Animal.prototype)); 
+console.log("a1.color="+a1.color);
+
+//Expression d'un heritage entre Dog et Animal
+Dog.prototype = Object.create(Animal.prototype, {
+	constructor: { value: Dog, 
+	               enumerable: false, 
+				   writable: true, 
+				   configurable: true } 
+	});
+
+//constructeur de Dog(...)
+function Dog(type,name){
+	//NB: methodeXy.call(this, args) permet de préciser this en plus des arguments
+	Client.call(this,name); //appel du constructeur de Client(...)
+	this.type=type;//new attribute/property
 }
-extendClass(Dog,Animal);
 Dog.prototype.height="40"; // Après HERITAGE !!!
 
 
-
-var d1 = new Dog("berger allemand");
+var d1 = new Dog("berger allemand", "medor");
 console.log("d1.type=" + d1.type);
 console.log("d1.name=" + d1.name);
 console.log("d1.height=" + d1.height);

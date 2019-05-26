@@ -6,8 +6,11 @@
 var express = require('express');
 var bodyParser = require('body-parser'); //en complement pour express 4 
 var app = express();
-var minibankDaoModule = require('./minibank_dao_module');
-var minibankDAO = new minibankDaoModule.MinibankDAO();
+
+//var minibankDaoModule = require('./minibank_dao_module');
+//var minibankDAO = new minibankDaoModule.MinibankDAO();
+var myGenericMongoClient = require('./my_generic_mongo_client'); 
+
 var assert = require('assert');
 var Q = require('q');
 var uuid = require('uuid'); //to generate a simple token
@@ -64,7 +67,7 @@ app.get('/minibank/clients/:numero',
 
 var sendGenericJsonExpressResponse = function(collectionName,query,res){
 	res.setHeader('Content-Type', 'application/json');
-	minibankDAO.genericFind(collectionName,query,onResultReady);
+	myGenericMongoClient.genericFind(collectionName,query,onResultReady);
 	function onResultReady(err,jsObject){
 		res.write(JSON.stringify(jsObject));
 	    res.end();

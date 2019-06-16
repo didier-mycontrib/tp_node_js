@@ -1,0 +1,26 @@
+{
+  "name": "sequelize-ts",
+  "version": "1.0.0",
+  "description": "express app with bd access , rest api , handlebars templates (typescript, import es2015)",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec dist/test/*.spec.js",
+    "tsc:w": "tsc -w"
+  },
+  "keywords": [
+    "ts",
+    "rest",
+    "db"
+  ],
+  "author": "didier Defrance",
+  "license": "ISC",
+  "dependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.7",
+    "@types/sequelize": "^4.27.36",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "mysql2": "^1.6.5",
+    "sequelize": "^4.42.0"
+  }
+}

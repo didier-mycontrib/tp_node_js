@@ -1,0 +1,45 @@
+import chai from 'chai';
+import chaiHttp = require('chai-http');
+import { Devise } from '../model/index.data';
+//import request from "request";
+import server from "../server";
+let expect = chai.expect;
+//let app = server.app;
+
+chai.use(chaiHttp);
+
+describe("api devise / chai-http", () => {
+
+  var baseUrl="http://localhost:8282"
+  var apiPath = "./my-api/public/devise"; //relative to server
+    
+
+  describe("getDeviseByCode", function() {
+
+    /*
+    describe('GET devise non existante', () => {
+      it('renvoi bien 404 Not Found', async function () {
+        let res = await chai.request(app)
+          .get(baseUrl+'/codeMonnaieSinge');
+        expect(res).to.have.status(404);
+      });
+    });
+*/
+    
+describe('GET devise existante', () => {
+    it("get good values for EUR", async function () {
+
+      //ERROR !!!!
+
+      let res = await /*chai.request(app)*/ chai.request(baseUrl).get(apiPath+'/EUR');
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.have.property("code");
+        expect(res.body).to.have.property("name");
+        let deviseEUR : Devise = JSON.parse(res.body);
+        expect(deviseEUR.name).to.equals("Euro"); 
+      });
+    });
+  });  
+
+});

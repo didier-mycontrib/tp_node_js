@@ -1,0 +1,2 @@
+ "@types/sequelize": "^4.27.36",
+  "sequelize": "^4.42.0"

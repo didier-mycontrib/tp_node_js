@@ -4,6 +4,7 @@
   "description": "with sequelize",
   "main": "index.js",
   "scripts": {
+    "start" : "node dist/server",
     "test": "./node_modules/.bin/mocha --reporter spec dist/test/*.spec.js",
     "apidoc": "apidoc -i dist/api/ -o apidoc/"
   },

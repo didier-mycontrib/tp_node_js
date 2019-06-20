@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS deviseApiDb charset=utf8;
 USE deviseApiDb;
 
-CREATE TABLE IF NOT EXISTS Devise(
+CREATE TABLE IF NOT EXISTS devise(
 	code VARCHAR(34) ,
 	monnaie VARCHAR(64),
 	tauxChange double ,

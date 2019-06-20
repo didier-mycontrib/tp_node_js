@@ -18,6 +18,7 @@ var MySqDatabase = /** @class */ (function () {
         var sqOptions = {
             dialect: db_config_1.confDb.dialect,
             port: db_config_1.confDb.port,
+            host: db_config_1.confDb.host,
             logging: /*console.log*/ false,
             define: {
                 timestamps: false

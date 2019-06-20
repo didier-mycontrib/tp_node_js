@@ -15,5 +15,5 @@ docker container ls
 =======
 docker container exec -ti devise-api-container sh
 pour debug :
-ping devise.db.host
+ping -c 2 devise.db.host
 exit

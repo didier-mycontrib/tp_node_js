@@ -1,2 +1,3 @@
-REM node dist/server.js
-nodemon dist/server.js
+set MODE=prod
+node dist/server.js
+REM nodemon dist/server.js

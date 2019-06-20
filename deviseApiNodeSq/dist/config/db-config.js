@@ -7,7 +7,9 @@ var database_cfg_1 = __importDefault(require("./database.cfg"));
 var mode = process.env.MODE; //env variable MODE=dev or MODE=prod when launching node
 if (mode == undefined)
     mode = "dev";
+//console.log("in db-config, mode="+mode);
 exports.confDb = (mode == "dev") ? database_cfg_1.default.dev : database_cfg_1.default.prod;
+console.log("in db-config, confDb.host=" + exports.confDb.host);
 if (exports.confDb.port === undefined) {
     if (exports.confDb.dialect == "mysql") {
         exports.confDb.port = 3306;

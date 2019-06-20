@@ -19,6 +19,7 @@ export class MyApiModels {
       let sqOptions = {
             dialect: confDb.dialect,
             port : confDb.port,
+            host : confDb.host,
             logging: /*console.log*/false, // false or console.log,// permet de voir les logs de sequelize
             define: {
                 timestamps: false

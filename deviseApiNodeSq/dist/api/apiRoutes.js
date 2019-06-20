@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
+var devise_1 = require("../model/devise");
 var sqDeviseService_1 = require("../dao/sqDeviseService");
 var resConv_1 = require("./dto/resConv");
 exports.apiRouter = express_1.Router();
@@ -140,6 +141,18 @@ exports.apiRouter.route('/deviseApi/rest/public/devises/:code')
         .then(function () { res.status(200).send({ "action": "devise with code=" + codeDevise + " was deleted" }); })
         .catch(function (err) { return next(err); });
 });
+// http://localhost:8282/deviseApi/rest/public/init-devises initialisant (et renvoyant) un jeu de données
+exports.apiRouter.route('/deviseApi/rest/public/init-devises').get(function (req, res, next) {
+    deviseService.saveOrUpdate(new devise_1.DeviseObject("EUR", "euro", 1))
+        .then(function () { return deviseService.saveOrUpdate(new devise_1.DeviseObject("USD", "dollar", 1.1)); })
+        .then(function () { return deviseService.saveOrUpdate(new devise_1.DeviseObject("GBP", "livre", 0.9)); })
+        .then(function () { return deviseService.saveOrUpdate(new devise_1.DeviseObject("JPY", "yen", 132)); })
+        .then(function () { return deviseService.findAll(); })
+        .then(function (deviseArray) {
+        res.send(deviseArray);
+    })
+        .catch(function (err) { return next(err); });
+});
 // http://localhost:8282/deviseApi/rest/public/devises renvoyant tout [ {} , {}]
 // http://localhost:8282/deviseApi/rest/public/devises?changeMini=1.1 renvoyant [{}] selon critere
 exports.apiRouter.route('/deviseApi/rest/public/devises').get(function (req, res, next) {
@@ -158,6 +171,7 @@ exports.apiRouter.route('/').get(function (req, res) {
     res.setHeader('Content-Type', 'text/html');
     res.write("<html> <body>");
     res.write('<h3>index (developper page) of deviseApp</h3>');
+    res.write('<a href="deviseApi/rest/public/init-devises">initialisation jeu de donnees</a><br/>');
     res.write('<a href="deviseApi/rest/public/devises/EUR">devise euro as Json string</a><br/>');
     res.write('<a href="deviseApi/rest/public/devises">toutes les devises (Json)</a><br/>');
     res.write('<a href="deviseApi/rest/public/devises?changeMini=1.1">devises avec change >= 1.1 (Json)</a><br/>');

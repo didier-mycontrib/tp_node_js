@@ -1,10 +1,10 @@
 define({ "api": [
   {
     "type": "get",
-    "url": "/devise/:code",
+    "url": "/deviseApi/rest/public/devises/:code",
     "title": "Request Devise values by code",
     "name": "GetDeviseByCode",
-    "group": "Devise",
+    "group": "deviseApi",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -39,14 +39,14 @@ define({ "api": [
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "devise.nom",
+            "field": "devise.monnaie",
             "description": "<p>name of Devise (ex: euro , dollar , livre , yen)</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "optional": false,
-            "field": "devise.change",
+            "field": "devise.tauxChange",
             "description": "<p>change for 1 euro.</p>"
           }
         ]
@@ -70,6 +70,6 @@ define({ "api": [
     },
     "version": "0.0.0",
     "filename": "dist/api/apiRoutes.js",
-    "groupTitle": "Devise"
+    "groupTitle": "deviseApi"
   }
 ] });

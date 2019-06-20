@@ -1,5 +1,5 @@
 import { Request, Response ,NextFunction, Router} from 'express';
-import { Devise } from '../model/devise';
+import { Devise, DeviseObject } from '../model/devise';
 //import { ErrorWithStatus , NotFoundError, ConflictError} from '../error/errorWithStatus'
 import { MemoryMapDeviseService } from '../dao/memoryMapDeviseService';
 import { SqDeviseService } from '../dao/sqDeviseService';
@@ -107,6 +107,18 @@ apiRouter.route('/deviseApi/rest/public/devises/:code')
     .catch((err)=>next(err));  
 });
 
+// http://localhost:8282/deviseApi/rest/public/init-devises initialisant (et renvoyant) un jeu de données
+apiRouter.route('/deviseApi/rest/public/init-devises').get(function(req :Request, res :Response , next: NextFunction ) {
+    deviseService.saveOrUpdate(new DeviseObject("EUR" , "euro" , 1))
+    .then(()=>deviseService.saveOrUpdate(new DeviseObject("USD" , "dollar" , 1.1)))
+    .then(()=>deviseService.saveOrUpdate(new DeviseObject("GBP" , "livre" , 0.9)))
+    .then(()=>deviseService.saveOrUpdate(new DeviseObject("JPY" , "yen" , 132)))
+    .then(()=>deviseService.findAll())
+    .then((deviseArray)=> { 
+        res.send(deviseArray) 
+    })
+    .catch((err)=>next(err));
+});
 
 // http://localhost:8282/deviseApi/rest/public/devises renvoyant tout [ {} , {}]
 // http://localhost:8282/deviseApi/rest/public/devises?changeMini=1.1 renvoyant [{}] selon critere
@@ -129,6 +141,7 @@ apiRouter.route('/').get( function(req :Request, res :Response ) {
     res.setHeader('Content-Type', 'text/html');
     res.write("<html> <body>");
     res.write('<h3>index (developper page) of deviseApp</h3>');
+    res.write('<a href="deviseApi/rest/public/init-devises">initialisation jeu de donnees</a><br/>');
     res.write('<a href="deviseApi/rest/public/devises/EUR">devise euro as Json string</a><br/>');
     res.write('<a href="deviseApi/rest/public/devises">toutes les devises (Json)</a><br/>');
     res.write('<a href="deviseApi/rest/public/devises?changeMini=1.1">devises avec change >= 1.1 (Json)</a><br/>');

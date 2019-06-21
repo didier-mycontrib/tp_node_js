@@ -9,7 +9,7 @@ export default{
 	},
 "prod": {
 	"dialect": "mysql",
-	"host": "devise.db.host",
+	"host": "devise.db.service",
 	"port": 3306,
 	"database": "deviseApiDb",
 	"user": "root",

@@ -3,7 +3,7 @@
 su
 docker image build -t xyz/devise-db  .
 docker image ls
-docker run -p 3306:3306 -d --name devise-db-container --network mynetwork --network-alias=devise.db.host xyz/devise-db
+docker run -p 3306:3306 -d --name devise-db-container --network mynetwork --network-alias=devise.db.service xyz/devise-db
 docker container ls
 
 =======

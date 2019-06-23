@@ -1,0 +1,15 @@
+{
+    "name": "chat-sockek-io",
+    "version": "0.1.0",
+    "dependencies": {
+        "ent": "^2.2.0",
+        "express": "^4.17.1",
+        "socket.io": "^2.2.0"
+    },
+    "description": "Chat temps réel avec socket.io",
+    "devDependencies": {
+        "@types/ent": "^2.2.1",
+        "@types/express": "^4.17.0",
+        "@types/socket.io": "^2.1.2"
+    }
+}

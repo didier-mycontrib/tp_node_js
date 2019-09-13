@@ -1,0 +1,38 @@
+[
+  {
+  "titre":"gros horloge rouen",
+  "fichier_image_name":"rouen.jpg",
+  "resume":"rue du gros Horloge",
+  "texte_complet":null,
+  "date":"2019-07-12",
+  "fichier_details_name":null,
+  "lien_externe":"https://fr.wikipedia.org/wiki/Gros-Horloge"
+   },
+   {
+   "titre":"chateau de gaillon",
+   "fichier_image_name": "gaillon.jpg",
+   "resume":"chateau gaillon (renaissance)",
+   "lien_externe":"http://www.passionchateaux.com/ch_gaillon.htm",
+   "date":"2019-07-11",
+   "fichier_details_name":null,
+   "texte_complet":null
+   },
+   {
+   "titre":"tour eiffel",
+   "fichier_image_name": "tourEiffel.jpg",
+   "resume":"tour eiffel (Paris)",
+   "lien_externe":null,
+   "date":"2019-07-11",
+   "fichier_details_name":null,
+   "texte_complet":"<p> la <b>Tour Eiffel</b> mesure environ 300 mètres </p>"
+   },
+   {
+   "titre":"Mont Saint Michel",
+   "fichier_image_name": "montSaintMichel.jpg",
+   "resume":"Mont Saint Michel",
+   "lien_externe":null,
+   "date":"2019-07-11",
+   "fichier_details_name":null,
+   "texte_complet":"<p> le <b>Mont Saint Michel</b> change de couleur très fréquemment </p>"
+   }
+]

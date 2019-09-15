@@ -3,7 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const MongoPublicationDataService_1 = require("../core/mongo/MongoPublicationDataService");
 const apiHandler_1 = require("./apiHandler");
-var publicationService = new MongoPublicationDataService_1.MongoPublicationService();
+const MyAppConfig_1 = require("../config/MyAppConfig");
+const MemPublicationDataService_1 = require("../core/mem/MemPublicationDataService");
+var publicationService = initPublicationService();
+function initPublicationService() {
+    if (MyAppConfig_1.MyAppConfig.isNoDB())
+        return new MemPublicationDataService_1.MemPublicationService();
+    else
+        return new MongoPublicationDataService_1.MongoPublicationService();
+}
 exports.publicationApiRouter = express_1.Router();
 // http://localhost:8282/news-api/public/publication renvoyant tout [ {} , {}]
 // http://localhost:8282/news-api/public/publication?... renvoyant [{}] selon critere

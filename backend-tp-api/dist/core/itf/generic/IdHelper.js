@@ -8,6 +8,9 @@ class AbstractIdHelper {
     extractId(e) {
         return Reflect.get(e, this.idPropName);
     }
+    setId(e, id) {
+        Reflect.set(e, this.idPropName, id);
+    }
     isAuto() {
         return this.auto;
     }

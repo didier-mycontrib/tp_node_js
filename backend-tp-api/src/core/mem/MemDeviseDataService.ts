@@ -15,9 +15,9 @@ export class MemDeviseService
         super();
         this.idHelper=this.deviseIdHelper;
         this.dataMap.set("USD", new DeviseObject("USD" , "Dollar" , 1));
-        this.dataMap.set("EUR", new DeviseObject("EUR" , "Euro" , 0.9));
-        this.dataMap.set("GBP", new DeviseObject("GBP" , "Livre" , 0.8));
-        this.dataMap.set("JPY", new DeviseObject("JPY" , "Yen" , 132.0));
+        this.dataMap.set("EUR", new DeviseObject("EUR" , "Euro" , 0.91));
+        this.dataMap.set("GBP", new DeviseObject("GBP" , "Livre" , 0.81));
+        this.dataMap.set("JPY", new DeviseObject("JPY" , "Yen" , 132.01));
     }
 
     

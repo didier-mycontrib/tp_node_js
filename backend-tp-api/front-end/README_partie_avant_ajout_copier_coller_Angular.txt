@@ -1,0 +1,6 @@
+images/...
+posts/...
+dev-index.html
+===============
+tout le reste = copier/coller du resultat de ng build --prod
+avec base="/" changé en base ="."

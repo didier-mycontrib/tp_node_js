@@ -4,8 +4,16 @@ type UploadedFile = fileUpload.UploadedFile;
 import { PublicationDataService } from '../core/itf/PublicationDataService';
 import { MongoPublicationService } from '../core/mongo/MongoPublicationDataService';
 import { asyncToResp } from './apiHandler';
+import { MyAppConfig } from '../config/MyAppConfig';
+import { MemPublicationService} from "../core/mem/MemPublicationDataService";
 
-var  publicationService : PublicationDataService  = new MongoPublicationService();
+var  publicationService : PublicationDataService  = initPublicationService();
+function initPublicationService() : PublicationDataService {
+  if(MyAppConfig.isNoDB())
+       return new MemPublicationService();
+  else
+       return new MongoPublicationService();
+}
 
 export const publicationApiRouter = Router();
 

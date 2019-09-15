@@ -11,6 +11,7 @@ const deviseApiRoutes_1 = require("./api/deviseApiRoutes");
 const publicationApiRoutes_1 = require("./api/publicationApiRoutes");
 const loginApiRoutes_1 = require("./api/loginApiRoutes");
 const verif_auth_1 = require("./api/verif-auth");
+const MyAppConfig_1 = require("./config/MyAppConfig");
 //PRE TRAITEMENTS (à placer en haut de server.ts)
 //support parsing of JSON post data
 var jsonParser = bodyParser.json();
@@ -44,10 +45,16 @@ exports.app.use(apiHandler_1.apiErrorHandler); //pour gérer les erreurs/excepti
 */
 exports.server = exports.app.listen(process.env.PORT, function () {
     console.log("http://localhost:" + process.env.PORT);
-    /*
-    //if not called here , initConnections() will be deffered (lazy)
-    myAppConnectionMap.initConnections()
-                       .then((bOk)=>{ console.log("database connections is ok"); });
-    */
+    //console.log("process.argv="+ process.argv);
+    if (MyAppConfig_1.MyAppConfig.isNoDB()) {
+        console.log("starting with memoryMap services (no database)");
+    }
+    else {
+        /*
+        //if not called here , initConnections() will be deffered (lazy)
+        myAppConnectionMap.initConnections()
+                          .then((bOk)=>{ console.log("database connections is ok"); });
+        */
+    }
     console.log("rest express node server listening at " + process.env.PORT);
 });

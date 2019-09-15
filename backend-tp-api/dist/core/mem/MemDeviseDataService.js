@@ -10,9 +10,9 @@ class MemDeviseService extends GenericMemDataService_1.GenericMemDataService {
         this.deviseIdHelper = new IdHelper_1.StaticIdHelper("code");
         this.idHelper = this.deviseIdHelper;
         this.dataMap.set("USD", new devise_1.DeviseObject("USD", "Dollar", 1));
-        this.dataMap.set("EUR", new devise_1.DeviseObject("EUR", "Euro", 0.9));
-        this.dataMap.set("GBP", new devise_1.DeviseObject("GBP", "Livre", 0.8));
-        this.dataMap.set("JPY", new devise_1.DeviseObject("JPY", "Yen", 132.0));
+        this.dataMap.set("EUR", new devise_1.DeviseObject("EUR", "Euro", 0.91));
+        this.dataMap.set("GBP", new devise_1.DeviseObject("GBP", "Livre", 0.81));
+        this.dataMap.set("JPY", new devise_1.DeviseObject("JPY", "Yen", 132.01));
     }
 }
 exports.MemDeviseService = MemDeviseService;

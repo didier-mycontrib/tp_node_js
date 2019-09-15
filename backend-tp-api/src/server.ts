@@ -5,10 +5,10 @@ export const  app :express.Application = express();
 import { apiErrorHandler} from './api/apiHandler'
 import { globalRouter } from './api/globalRoutes';
 import { deviseApiRouter } from './api/deviseApiRoutes';
-import { myAppConnectionMap } from './core/db-connections';
 import { publicationApiRouter } from './api/publicationApiRoutes';
 import { loginApiRouter } from './api/loginApiRoutes';
 import { verifTokenInHeadersForPrivatePath, secureModeApiRouter } from './api/verif-auth';
+import { MyAppConfig } from './config/MyAppConfig';
 
 
 //PRE TRAITEMENTS (à placer en haut de server.ts)
@@ -54,10 +54,15 @@ app.use(apiErrorHandler); //pour gérer les erreurs/exceptions
 
 export const server = app.listen(process.env.PORT , function () {
     console.log("http://localhost:" + process.env.PORT );
-    /*
-    //if not called here , initConnections() will be deffered (lazy)
-    myAppConnectionMap.initConnections()
-                       .then((bOk)=>{ console.log("database connections is ok"); });               
-    */                       
+    //console.log("process.argv="+ process.argv);
+    if(MyAppConfig.isNoDB()){
+      console.log("starting with memoryMap services (no database)"); 
+    }else{
+      /*
+      //if not called here , initConnections() will be deffered (lazy)
+      myAppConnectionMap.initConnections()
+                        .then((bOk)=>{ console.log("database connections is ok"); });               
+      */   
+    }                    
     console.log("rest express node server listening at " + process.env.PORT);
 });

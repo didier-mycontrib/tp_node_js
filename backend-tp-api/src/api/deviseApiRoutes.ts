@@ -5,11 +5,17 @@ import { asyncToResp} from './apiHandler';
 import { MemDeviseService } from '../core/mem/MemDeviseDataService';
 import { DeviseDataService } from '../core/itf/deviseDataService';
 import { MongoDeviseService } from '../core/mongo/MongoDeviseDataService';
+import { MyAppConfig } from '../config/MyAppConfig';
 
 export const deviseApiRouter = Router();
 
-var  deviseService : DeviseDataService  //= new MemDeviseService();
-                                       = new MongoDeviseService();
+var  deviseService : DeviseDataService  = initDeviseService()
+function initDeviseService() : DeviseDataService {
+    if(MyAppConfig.isNoDB())
+         return new MemDeviseService();
+    else
+         return new MongoDeviseService();
+}
 
 // .../devise-api/public/devise/EUR ou ...
 deviseApiRouter.route('/devise-api/public/devise/:code')

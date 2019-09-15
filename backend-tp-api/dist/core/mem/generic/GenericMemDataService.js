@@ -4,18 +4,38 @@ const IdHelper_1 = require("../../itf/generic/IdHelper");
 const errorWithStatus_1 = require("../../../error/errorWithStatus");
 class GenericMemDataService {
     constructor() {
-        this.lastId = 0; //if ID=number and idHelper.isAuto() only
+        this.lastId = 0; //if ID=number (or number in string) and idHelper.isAuto() only
         this.dataMap = new Map(); //empty map
         //may be replaced/override in subclass:
         this.idHelper = new IdHelper_1.AutoIdHelper(); //.id
+    }
+    initLastId(lastId = null) {
+        if (typeof this.lastId == "number") {
+            this.lastId = lastId;
+        }
+        else {
+            this.lastId = Number(this.lastId);
+        }
+    }
+    incrementLastId() {
+        if (typeof this.lastId == "number") {
+            this.lastId++;
+            return this.lastId;
+        }
+        else {
+            this.lastId = 1 + Number(this.lastId);
+            return ("" + this.lastId);
+        }
     }
     insert(dataObj) {
         return new Promise((resolve, reject) => {
             let id = this.idHelper.extractId(dataObj);
             if (!this.idHelper.isAuto() && id == null)
                 reject(new Error("entity must have a valid defined id , no auto_incr"));
-            if (this.idHelper.isAuto() && id == null)
-                id = (++this.lastId);
+            if (this.idHelper.isAuto() && id == null) {
+                id = this.incrementLastId();
+                this.idHelper.setId(dataObj, id);
+            }
             // console.log("in insert() , dataObj="+JSON.stringify(dataObj) + " and id="+id);
             this.dataMap.set(id, dataObj);
             resolve(dataObj);

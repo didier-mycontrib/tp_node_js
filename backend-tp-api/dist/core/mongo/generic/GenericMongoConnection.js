@@ -25,10 +25,10 @@ class MyMongoConnection extends my_db_connection_1.MyAbstractDbConnection {
             optionalAuthUrlPart = `${this.username}:${this.password}@`;
         }
         this.dbUrl = `mongodb://${optionalAuthUrlPart}${this.host}:${this.port}/${this.dbName}`;
-        console.log("MyMongoConnection, dbUrl=" + this.dbUrl);
         //openConnection(); should be called AFTER (Promise)
     }
     openConnection() {
+        console.log("MyMongoConnection, trying openConnection with dbUrl=" + this.dbUrl);
         return new Promise((resolve, reject) => {
             if (this.initialized)
                 resolve("mongodb connection already initialized");

@@ -3,9 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 //import { ErrorWithStatus , NotFoundError, ConflictError } from '../error/errorWithStatus';
 const apiHandler_1 = require("./apiHandler");
+const MemDeviseDataService_1 = require("../core/mem/MemDeviseDataService");
 const MongoDeviseDataService_1 = require("../core/mongo/MongoDeviseDataService");
+const MyAppConfig_1 = require("../config/MyAppConfig");
 exports.deviseApiRouter = express_1.Router();
-var deviseService = new MongoDeviseDataService_1.MongoDeviseService();
+var deviseService = initDeviseService();
+function initDeviseService() {
+    if (MyAppConfig_1.MyAppConfig.isNoDB())
+        return new MemDeviseDataService_1.MemDeviseService();
+    else
+        return new MongoDeviseDataService_1.MongoDeviseService();
+}
 // .../devise-api/public/devise/EUR ou ...
 exports.deviseApiRouter.route('/devise-api/public/devise/:code')
     .get(apiHandler_1.asyncToResp(async function (req, res, next) {

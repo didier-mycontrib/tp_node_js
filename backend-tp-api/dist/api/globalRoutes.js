@@ -5,11 +5,24 @@ const tslib_1 = require("tslib");
 const express_1 = require("express");
 const path = tslib_1.__importStar(require("path"));
 exports.globalRouter = express_1.Router();
-exports.globalRouter.route('/ngr/*')
-    .get(function (req, res, next) {
-    //send SPA index.html instead of virtual relative angular routes "/ngr/*"
-    res.sendFile(path.join(__dirname, 'front-end/index.html'));
-});
+var redirectDownloadToAngularIndexPage = function (req, res, next) {
+    //send SPA index.html (or side *.js if base=".") 
+    //instead of virtual relative angular routes "/ngr/*"
+    let r = req.params.r;
+    let relativeToDistApi__dirname_prefix = "../../";
+    let fileName;
+    /* if(r.includes("."))
+        fileName=r; //.js , .ico , .... (bundle or ... just aside index.html) , no necessary if base="/"
+    else*/
+    fileName = "index.html"; //main angular page    
+    res.sendFile(path.join(__dirname, relativeToDistApi__dirname_prefix + 'front-end/' + fileName));
+};
+//NB all angular routes should begin with "ngr/" 
+//in src/app/app.routing.module.ts (in angular app)
+exports.globalRouter.route('/ngr/:r') //simple angular relative route
+    .get(redirectDownloadToAngularIndexPage);
+exports.globalRouter.route('/ngr/*/:r') //complex angular relative route
+    .get(redirectDownloadToAngularIndexPage);
 exports.globalRouter.route('/')
     .get(function (req, res, next) {
     res.setHeader('Content-Type', 'text/html');

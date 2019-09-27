@@ -16,6 +16,8 @@ app.use('/html', express.static(__dirname+"/html"));
 app.get('/', function(req :Request, res : Response ) {
     res.redirect('/html/index.html');
   });
+  
+//events: connection, message , disconnect and custom_event like nouveau_client
 
 io.sockets.on('connection', function (socket:any, pseudo:string) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes

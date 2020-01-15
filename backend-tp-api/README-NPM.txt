@@ -14,6 +14,18 @@ npm install --save-dev @types/mocha
 npm install -s mongodb
 npm install --save-dev @types/mongodb
 
+#NB: nedb (node embedded db) est une minibase de données embarquée
+# ressemblant à mongodb (pratique pour mini-besoins ou bien tests)
+npm install -s nedb
+npm install --save-dev @types/nedb
+
+#NB: sqlite3 (compatible sequelize) est une minibase embarquée au format SQL
+# un peu équivalent à h2 du monde java
+npm install -s sqlite3
+npm install --save-dev @types/sqlite3
+
+
+
 npm install -s jsonwebtoken
 npm install --save-dev @types/jsonwebtoken
 

@@ -9,6 +9,15 @@
             "user": null,
             "password": null
             },
+        "nedb-test": {
+            "type" : "nedb",
+            "dialect": null,
+            "host": null,
+            "port": null,
+            "database": "nedb-test",
+            "user": null,
+           "password": null
+         },    
          "mysql-dev": {
             "type" : "sequelize",
             "dialect": "mysql",

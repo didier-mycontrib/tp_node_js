@@ -93,15 +93,11 @@ class GenericMongoDataService {
         //console.log("in saveOrUpdate() , dataObj="+JSON.stringify(dataObj));
         let id = this.idHelper.extractId(dataObj);
         //console.log("in saveOrUpdate() , id="+id);
-        if (this.idHelper.isAuto()) {
-            if (id == null) {
-                return this.insert(dataObj);
-            }
-            else {
-                return this.update(dataObj);
-            }
+        if (this.idHelper.isAuto() && id == null) {
+            return this.insert(dataObj);
         }
         else {
+            //NB: autre solution: coder et appeler un update() with upsert option.
             return new Promise((resolve, reject) => {
                 this.findById(id)
                     .then((existingEntityToUpdate) => {

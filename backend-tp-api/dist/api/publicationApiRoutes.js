@@ -4,11 +4,12 @@ const express_1 = require("express");
 const MongoPublicationDataService_1 = require("../core/mongo/MongoPublicationDataService");
 const apiHandler_1 = require("./apiHandler");
 const MyAppConfig_1 = require("../config/MyAppConfig");
-const MemPublicationDataService_1 = require("../core/mem/MemPublicationDataService");
+const NedbPublicationDataService_1 = require("../core/nedb/NedbPublicationDataService");
 var publicationService = initPublicationService();
 function initPublicationService() {
     if (MyAppConfig_1.MyAppConfig.isNoDB())
-        return new MemPublicationDataService_1.MemPublicationService();
+        //return new MemPublicationService();
+        return new NedbPublicationDataService_1.NedbPublicationService();
     else
         return new MongoPublicationDataService_1.MongoPublicationService();
 }

@@ -19,7 +19,7 @@ app.get('/', function(req :Request, res : Response ) {
   
 //events: connection, message , disconnect and custom_event like nouveau_client
 
-io.sockets.on('connection', function (socket:any, pseudo:string) {
+io.sockets.on('connection', function (socket:any) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
     socket.on('nouveau_client', function(pseudo:string) {
         pseudo = ent.encode(pseudo);

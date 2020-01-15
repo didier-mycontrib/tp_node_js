@@ -3,15 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 //import { ErrorWithStatus , NotFoundError, ConflictError } from '../error/errorWithStatus';
 const apiHandler_1 = require("./apiHandler");
-const MemDeviseDataService_1 = require("../core/mem/MemDeviseDataService");
 const MongoDeviseDataService_1 = require("../core/mongo/MongoDeviseDataService");
+const NedbDeviseDataService_1 = require("../core/nedb/NedbDeviseDataService");
 const MyAppConfig_1 = require("../config/MyAppConfig");
 exports.deviseApiRouter = express_1.Router();
 var deviseService = initDeviseService();
 function initDeviseService() {
     if (MyAppConfig_1.MyAppConfig.isNoDB())
-        return new MemDeviseDataService_1.MemDeviseService();
+        //return new MemDeviseService();
+        return new NedbDeviseDataService_1.NedbDeviseService();
     else
+        //return new NedbDeviseService();
         return new MongoDeviseDataService_1.MongoDeviseService();
 }
 // .../devise-api/public/devise/EUR ou ...

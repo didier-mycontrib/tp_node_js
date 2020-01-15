@@ -23,7 +23,7 @@ app.use('/html', express_1.default.static(__dirname + "/html"));
 app.get('/', function (req, res) {
     res.redirect('/html/index.html');
 });
-io.sockets.on('connection', function (socket, pseudo) {
+io.sockets.on('connection', function (socket) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
     socket.on('nouveau_client', function (pseudo) {
         pseudo = ent.encode(pseudo);

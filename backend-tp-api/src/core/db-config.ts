@@ -4,12 +4,12 @@ import * as dbCfg from './db.cfg.json';
 
 // db config interface (config structure):
 export interface IDbConfig {
-	type: "mongodb" | "sequelize";
-	dialect: "mssql" | "mysql" | "postgres" | "sqlite" | "mariadb",
-	host: string,
-	port: number,
-	database : string
-	user: string
+	type: "mongodb" | "sequelize" | "nedb";
+	dialect: "mssql" | "mysql" | "postgres" | "sqlite" | "mariadb";
+	host: string;
+	port: number;
+	database : string; //au sens path=`./${database}` pour nedb
+	user: string;
 	password : string ;
 }
 

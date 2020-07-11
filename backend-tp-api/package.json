@@ -1,12 +1,13 @@
 {
-  "name": "backend-tp-news",
+  "name": "backend-api",
   "version": "1.0.0",
   "description": "nodejs express server for backend-rest-api- (api-news, api-devises, ...)",
-  "main": "rest_express_server.js",
+  "main": "dist/server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec dist/test/*.spec.js",
     "apidoc": "apidoc -i dist/api/ -o apidoc/",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+	"start_noDB": "node dist/server.js --noDB"
   },
   "author": "didier defrance",
   "license": "ISC",

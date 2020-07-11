@@ -41,12 +41,8 @@ var genericUpdateOne = function(collectionName,id,changes,callback_with_err_and_
 	executeInMongoDbConnection( function(db) {
 		db.collection(collectionName).updateOne( { '_id' : id }, { $set : changes } ,
 			function(err, results) {
-			   //console.log("updateOne results="+JSON.stringify(results));
 				if(err!=null) {
 					console.log("genericUpdateOne error = " + err);
-				}else{
-					if(results.matchedCount == 0)
-					  err = "no existing object with this id was found , no update"
 				}
 			callback_with_err_and_results(err,results);
 			});
@@ -91,15 +87,14 @@ var genericRemove = function(collectionName,query,callback_with_err_and_result) 
 
 var genericDeleteOneById = function(collectionName,mongoIdAsString,callback_with_err_and_booleanResult) {
 	executeInMongoDbConnection( function(db) {
-		db.collection(collectionName).deleteOne( { '_id' : /*new ObjectID(*/mongoIdAsString } , function(err,deleteWriteOpResultObject) {
-		if(deleteWriteOpResultObject.deletedCount!=1) {
-			console.log("genericDeleteOneById --> no delete");
-			callback_with_err_and_booleanResult("no delete",false);
+		db.collection(collectionName).deleteOne( { '_id' : new ObjectID(mongoIdAsString)} ,function(err, obj) {
+		if(err!=null) {
+			console.log("genericDeleteOneById error = " + err);
+			callback_with_err_and_booleanResult(err,false);
 			}
-		else {
+		else 
 			console.log(" 1 document deleted");
-			callback_with_err_and_booleanResult(null,true);
-		  }
+		    callback_with_err_and_booleanResult(err,true);
 		});
    });
 };
@@ -110,7 +105,7 @@ var genericFindOne = function(collectionName,query, callback_with_err_and_item) 
 			if(err!=null) {
 				console.log("genericFindById error = " + err);
 		}
-		//assert.equal(null, err);
+		assert.equal(null, err);
 		callback_with_err_and_item(err,item);
 		});
     });

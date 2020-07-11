@@ -1,6 +1,5 @@
 {"name":"Euro","change":0.92,"_id":"EUR"}
-{"name":"Livre","change":0.82,"_id":"GBP"}
-{"name":"Yen","change":132.02,"_id":"JPY"}
+{"name":"Yen","change":"124","_id":"JPY"}
 {"name":"Dollar","change":1,"_id":"USD"}
 {"name":"Euro","change":0.92,"_id":"EUR"}
 {"name":"Livre","change":0.82,"_id":"GBP"}

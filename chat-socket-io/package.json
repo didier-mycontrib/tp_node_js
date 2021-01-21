@@ -4,7 +4,7 @@
     "dependencies": {
         "ent": "^2.2.0",
         "express": "^4.17.1",
-        "socket.io": "^2.2.0"
+        "socket.io": "^2.4.0"
     },
     "description": "Chat temps réel avec socket.io",
     "devDependencies": {

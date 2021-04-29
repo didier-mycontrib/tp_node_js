@@ -6,13 +6,13 @@ import { MongoPublicationService } from '../core/mongo/MongoPublicationDataServi
 import { asyncToResp } from './apiHandler';
 import { MyAppConfig } from '../config/MyAppConfig';
 import { MemPublicationService} from "../core/mem/MemPublicationDataService";
-import { NedbPublicationService} from "../core/nedb/NedbPublicationDataService";
+import { SqlitePublicationService} from "../core/sqlite/SqlitePublicationDataService";
 
 var  publicationService : PublicationDataService  = initPublicationService();
 function initPublicationService() : PublicationDataService {
   if(MyAppConfig.isNoDB())
        //return new MemPublicationService();
-       return new NedbPublicationService();
+       return new SqlitePublicationService();
   else
        return new MongoPublicationService();
 }

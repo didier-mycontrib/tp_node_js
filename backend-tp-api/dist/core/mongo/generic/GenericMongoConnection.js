@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MyMongoConnection = void 0;
 const db_config_1 = require("../../db-config");
 const mongodb_1 = require("mongodb");
 const my_db_connection_1 = require("../../my-db-connection");

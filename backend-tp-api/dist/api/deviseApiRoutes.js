@@ -1,20 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.deviseApiRouter = void 0;
 const express_1 = require("express");
 //import { ErrorWithStatus , NotFoundError, ConflictError } from '../error/errorWithStatus';
 const apiHandler_1 = require("./apiHandler");
 const MongoDeviseDataService_1 = require("../core/mongo/MongoDeviseDataService");
-const NedbDeviseDataService_1 = require("../core/nedb/NedbDeviseDataService");
 const MyAppConfig_1 = require("../config/MyAppConfig");
+const SqliteDeviseDataService_1 = require("../core/sqlite/SqliteDeviseDataService");
 exports.deviseApiRouter = express_1.Router();
 var deviseService = initDeviseService();
 function initDeviseService() {
     if (MyAppConfig_1.MyAppConfig.isNoDB())
         //return new MemDeviseService();
-        return new NedbDeviseDataService_1.NedbDeviseService();
-    else
         //return new NedbDeviseService();
+        return new SqliteDeviseDataService_1.SqliteDeviseService();
+    else
         return new MongoDeviseDataService_1.MongoDeviseService();
+    //return new SqliteDeviseService();
 }
 // .../devise-api/public/devise/EUR ou ...
 exports.deviseApiRouter.route('/devise-api/public/devise/:code')
@@ -23,7 +25,7 @@ exports.deviseApiRouter.route('/devise-api/public/devise/:code')
     let devise = await deviseService.findById(codeDevise);
     return devise;
 }));
-// http://localhost:8282/devise-api/publicdevise renvoyant tout [ {} , {}]
+// http://localhost:8282/devise-api/public/devise renvoyant tout [ {} , {}]
 // http://localhost:8282/devise-api/public/devise?changeMini=1.1 renvoyant [{}] selon critere
 exports.deviseApiRouter.route('/devise-api/public/devise')
     .get(apiHandler_1.asyncToResp(async function (req, res, next) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MemDeviseService = void 0;
 const GenericMemDataService_1 = require("./generic/GenericMemDataService");
 const devise_1 = require("../../model/devise");
 const IdHelper_1 = require("../itf/generic/IdHelper");

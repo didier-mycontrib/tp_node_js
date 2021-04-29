@@ -1,15 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.publicationApiRouter = void 0;
 const express_1 = require("express");
 const MongoPublicationDataService_1 = require("../core/mongo/MongoPublicationDataService");
 const apiHandler_1 = require("./apiHandler");
 const MyAppConfig_1 = require("../config/MyAppConfig");
-const NedbPublicationDataService_1 = require("../core/nedb/NedbPublicationDataService");
+const SqlitePublicationDataService_1 = require("../core/sqlite/SqlitePublicationDataService");
 var publicationService = initPublicationService();
 function initPublicationService() {
     if (MyAppConfig_1.MyAppConfig.isNoDB())
         //return new MemPublicationService();
-        return new NedbPublicationDataService_1.NedbPublicationService();
+        return new SqlitePublicationDataService_1.SqlitePublicationService();
     else
         return new MongoPublicationDataService_1.MongoPublicationService();
 }

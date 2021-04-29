@@ -5,8 +5,8 @@ import { asyncToResp} from './apiHandler';
 import { MemDeviseService } from '../core/mem/MemDeviseDataService';
 import { DeviseDataService } from '../core/itf/deviseDataService';
 import { MongoDeviseService } from '../core/mongo/MongoDeviseDataService';
-import { NedbDeviseService } from '../core/nedb/NedbDeviseDataService';
 import { MyAppConfig } from '../config/MyAppConfig';
+import { SqliteDeviseService } from '../core/sqlite/SqliteDeviseDataService';
 
 export const deviseApiRouter = Router();
 
@@ -14,10 +14,11 @@ var  deviseService : DeviseDataService  = initDeviseService()
 function initDeviseService() : DeviseDataService {
     if(MyAppConfig.isNoDB())
          //return new MemDeviseService();
-         return new NedbDeviseService();
+         //return new NedbDeviseService();
+         return new SqliteDeviseService();
     else
-        //return new NedbDeviseService();
         return new MongoDeviseService();
+        //return new SqliteDeviseService();
 }
 
 // .../devise-api/public/devise/EUR ou ...
@@ -28,7 +29,7 @@ deviseApiRouter.route('/devise-api/public/devise/:code')
     return devise;
 }));
 
-// http://localhost:8282/devise-api/publicdevise renvoyant tout [ {} , {}]
+// http://localhost:8282/devise-api/public/devise renvoyant tout [ {} , {}]
 // http://localhost:8282/devise-api/public/devise?changeMini=1.1 renvoyant [{}] selon critere
 deviseApiRouter.route('/devise-api/public/devise')
 .get(asyncToResp(async function(req :Request, res :Response , next: NextFunction ) {

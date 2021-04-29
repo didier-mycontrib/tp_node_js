@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.globalRouter = void 0;
 const tslib_1 = require("tslib");
 //modules to load:
 const express_1 = require("express");
@@ -7,7 +8,7 @@ const path = tslib_1.__importStar(require("path"));
 exports.globalRouter = express_1.Router();
 var redirectDownloadToAngularIndexPage = function (req, res, next) {
     //send SPA index.html (or side *.js if base=".") 
-    //instead of virtual relative angular routes "/ngr/*"
+    //instead of virtual relative angular routes "/ngr/*" or "/ngr-*"
     let r = req.params.r;
     let relativeToDistApi__dirname_prefix = "../../";
     let fileName;
@@ -17,11 +18,13 @@ var redirectDownloadToAngularIndexPage = function (req, res, next) {
     fileName = "index.html"; //main angular page    
     res.sendFile(path.join(__dirname, relativeToDistApi__dirname_prefix + 'front-end/' + fileName));
 };
-//NB all angular routes should begin with "ngr/" 
+//NB all angular routes should begin with "ngr-" or "ngr/" 
 //in src/app/app.routing.module.ts (in angular app)
-exports.globalRouter.route('/ngr/:r') //simple angular relative route
+exports.globalRouter.route('/ngr-:r') //simple angular relative route
     .get(redirectDownloadToAngularIndexPage);
-exports.globalRouter.route('/ngr/*/:r') //complex angular relative route
+exports.globalRouter.route('/ngr/:r') //alternative simple angular relative route
+    .get(redirectDownloadToAngularIndexPage);
+exports.globalRouter.route('/ngr/*/:r') //alternative complex angular relative route
     .get(redirectDownloadToAngularIndexPage);
 exports.globalRouter.route('/')
     .get(function (req, res, next) {

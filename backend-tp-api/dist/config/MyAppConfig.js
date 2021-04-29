@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MyAppConfig = void 0;
 class MyAppConfig {
     static initialize() {
         if (process.argv.includes("--noDB")) {

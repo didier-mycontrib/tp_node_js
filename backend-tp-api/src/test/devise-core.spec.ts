@@ -6,7 +6,8 @@ import { MongoDeviseService } from '../core/mongo/MongoDeviseDataService';
 import { myAppConnectionMap } from '../core/db-connections';
 let expect = chai.expect;
 
-var deviseDataService : DeviseDataService //=new MemDeviseService();
+var deviseDataService : DeviseDataService 
+                  //=new MemDeviseService();
                   = new MongoDeviseService();
 
 describe("internal deviseService", function() {

@@ -7,7 +7,7 @@ export const globalRouter = Router();
 var redirectDownloadToAngularIndexPage= 
   function(req :Request, res :Response , next: NextFunction ) {
     //send SPA index.html (or side *.js if base=".") 
-    //instead of virtual relative angular routes "/ngr/*"
+    //instead of virtual relative angular routes "/ngr/*" or "/ngr-*"
     let r = req.params.r;
     let relativeToDistApi__dirname_prefix="../../";
     let fileName ; 
@@ -19,14 +19,19 @@ var redirectDownloadToAngularIndexPage=
        relativeToDistApi__dirname_prefix  +'front-end/' + fileName));
    }
 
-//NB all angular routes should begin with "ngr/" 
+//NB all angular routes should begin with "ngr-" or "ngr/" 
 //in src/app/app.routing.module.ts (in angular app)
 
-globalRouter.route('/ngr/:r') //simple angular relative route
+globalRouter.route('/ngr-:r') //simple angular relative route
 .get(redirectDownloadToAngularIndexPage);
 
-globalRouter.route('/ngr/*/:r') //complex angular relative route
+globalRouter.route('/ngr/:r') //alternative simple angular relative route
 .get(redirectDownloadToAngularIndexPage);
+
+globalRouter.route('/ngr/*/:r') //alternative complex angular relative route
+.get(redirectDownloadToAngularIndexPage);
+
+
 
 
 globalRouter.route('/')

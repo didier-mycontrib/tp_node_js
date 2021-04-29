@@ -17,7 +17,16 @@
             "database": "nedb-test",
             "user": null,
            "password": null
-         },    
+         },  
+         "sqlite-test": {
+            "type" : "sqlite",
+            "dialect": null,
+            "host": null,
+            "port": null,
+            "database": "sqlite-test.db",
+            "user": null,
+           "password": null
+         },   
          "mysql-dev": {
             "type" : "sequelize",
             "dialect": "mysql",

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifTokenInHeadersForPrivatePath = exports.secureModeApiRouter = void 0;
 const express_1 = require("express");
 const apiHandler_1 = require("./apiHandler");
 const jwt_util_1 = require("../util/jwt-util");

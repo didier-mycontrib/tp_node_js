@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.asyncToResp = exports.apiErrorHandler = void 0;
 const errorWithStatus_1 = require("../error/errorWithStatus");
-exports.apiErrorHandler = function (err, req, res, next) {
+const apiErrorHandler = function (err, req, res, next) {
     //console.log("in apiErrorHandler err=", err + " " + JSON.stringify(err));
     //console.log("in apiErrorHandler typeof err=",typeof err);
     if (typeof err == 'string') {
@@ -15,6 +16,7 @@ exports.apiErrorHandler = function (err, req, res, next) {
     else
         res.status(500).json({ errorCode: '500', message: 'Internal Server Error' });
 };
+exports.apiErrorHandler = apiErrorHandler;
 function asyncToResp(fn) {
     return function (req, res, next) {
         // Make sure to `.catch()` any errors and pass them along to the `next()`

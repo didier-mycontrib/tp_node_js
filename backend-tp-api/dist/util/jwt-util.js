@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.extractSubjectWithRolesClaimFromJwtInAuthorizationHeader = exports.extractSubjectWithRolesClaimFromJwt = exports.buildJwtToken = void 0;
 const tslib_1 = require("tslib");
 const jwt = tslib_1.__importStar(require("jsonwebtoken"));
 const MY_DEFAULT_JWT_ISSUER = "http://www.mycompany";

@@ -1,6 +1,6 @@
 import { IDbConfig } from "./db-config";
 import { MyMongoConnection } from "./mongo/generic/GenericMongoConnection";
-import { MyNedbPseudoConnectionMap } from "./nedb/generic/GenericNedbConnection";
+import { MySqliteConnection } from "./sqlite/generic/GenericSqliteConnection";
 import { MyAbstractConnectionMap, MyAbstractDbConnection } from './my-db-connection';
 
 
@@ -9,7 +9,7 @@ export class MyAppConnectionMap extends MyAbstractConnectionMap {
 	constructor(){
 		super();
 		this.addConnection(new MyMongoConnection("mongo-test"));
-		this.addConnection(new MyNedbPseudoConnectionMap("nedb-test"));
+		this.addConnection(new MySqliteConnection("sqlite-test"));
 		//this.addConnection(new MyMongoConnection("mongo-cn2"));
 		//this.addConnection(new MySequelizeConnection("mysql-cnA"));
 	}

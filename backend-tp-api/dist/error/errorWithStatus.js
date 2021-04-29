@@ -3,6 +3,7 @@
 // avec un attribut status (404,500,...) permettant une automatisation
 // du retour du status http dans le "apiErrorHandler"
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConflictError = exports.NotFoundError = exports.ErrorWithStatus = void 0;
 //NB: Error is a very special class (native)
 //subclass cannot be test with instanceof , ...
 class ErrorWithStatus extends Error {

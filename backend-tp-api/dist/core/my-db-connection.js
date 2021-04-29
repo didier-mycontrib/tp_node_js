@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MyAbstractConnectionMap = exports.MyAbstractDbConnection = void 0;
 class MyAbstractDbConnection {
     constructor(name) {
         this.name = name;

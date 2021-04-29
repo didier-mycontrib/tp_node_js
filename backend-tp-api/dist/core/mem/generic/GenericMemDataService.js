@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GenericMemDataService = void 0;
 const IdHelper_1 = require("../../itf/generic/IdHelper");
 const errorWithStatus_1 = require("../../../error/errorWithStatus");
 class GenericMemDataService {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DeviseObject = void 0;
 //export type DeviseItf = DeviseAttributes ; /* simple type alias */
 //real class for instanciation ,  with constructor .
 class DeviseObject {

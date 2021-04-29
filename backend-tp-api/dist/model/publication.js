@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PublicationObject = void 0;
 //export type PublicationItf = Publication; /* simple type alias */
 //real class for instanciation ,  with constructor .
 class PublicationObject {

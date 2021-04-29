@@ -20,7 +20,7 @@ export abstract class MyAbstractConnectionMap {
 		return this.connectionMap.get(name);
 	}
 
-	public abstract async initConnections(): Promise<boolean>;
+	public abstract initConnections(): Promise<boolean>;
 	
 }
 

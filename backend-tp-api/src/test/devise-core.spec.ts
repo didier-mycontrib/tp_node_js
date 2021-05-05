@@ -2,13 +2,13 @@ import chai from 'chai';
 import { DeviseDataService } from "../core/itf/devisedataService";
 import { MemDeviseService } from "../core/mem/MemDeviseDataService"
 import { Devise } from '../model/devise';
-import { MongoDeviseService } from '../core/mongo/MongoDeviseDataService';
-import { myAppConnectionMap } from '../core/db-connections';
+import { MongooseDeviseService } from '../core/mongoose/MongooseDeviseDataService';
+import { myAppConnectionMap } from '../core/../db-connections/db-connections';
 let expect = chai.expect;
 
 var deviseDataService : DeviseDataService 
                   //=new MemDeviseService();
-                  = new MongoDeviseService();
+                  = new MongooseDeviseService();
 
 describe("internal deviseService", function() {
 

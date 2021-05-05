@@ -4,9 +4,9 @@ import { Devise } from '../model/devise';
 import { asyncToResp} from './apiHandler';
 import { MemDeviseService } from '../core/mem/MemDeviseDataService';
 import { DeviseDataService } from '../core/itf/deviseDataService';
-import { MongoDeviseService } from '../core/mongo/MongoDeviseDataService';
-import { MyAppConfig } from '../config/MyAppConfig';
-import { SqliteDeviseService } from '../core/sqlite/SqliteDeviseDataService';
+import { MyAppConfig } from '../profiles/MyAppConfig';
+import { SequelizeDeviseService } from '../core/sequelize/SequelizeDeviseDataService';
+import { MongooseDeviseService } from '../core/mongoose/MongooseDeviseDataService';
 
 export const deviseApiRouter = Router();
 
@@ -14,11 +14,10 @@ var  deviseService : DeviseDataService  = initDeviseService()
 function initDeviseService() : DeviseDataService {
     if(MyAppConfig.isNoDB())
          //return new MemDeviseService();
-         //return new NedbDeviseService();
-         return new SqliteDeviseService();
+         //return new MongooseDeviseService();
+         return new SequelizeDeviseService();
     else
-        return new MongoDeviseService();
-        //return new SqliteDeviseService();
+        return new MongooseDeviseService();
 }
 
 // .../devise-api/public/devise/EUR ou ...
@@ -33,20 +32,30 @@ deviseApiRouter.route('/devise-api/public/devise/:code')
 // http://localhost:8282/devise-api/public/devise?changeMini=1.1 renvoyant [{}] selon critere
 deviseApiRouter.route('/devise-api/public/devise')
 .get(asyncToResp(async function(req :Request, res :Response , next: NextFunction ) {
-    let  changeMini = req.query.changeMini;
+    let  changeMini = Number(req.query.changeMini);
+
+    let deviseArray = await deviseService.findByChangeMini(changeMini);
+    
+    /*
+    var filter=changeMini?{ change : { $gte : changeMini } }:{}; 
+    let deviseArray = await deviseService.findList(filter);
+    */
+  
+ /*
     let deviseArray = await deviseService.findAll();
     if(changeMini){
             //filtrage selon critère changeMini:
             deviseArray = deviseArray.filter((dev)=>dev.change >= changeMini);
         }
+   */
     return deviseArray;
 }));
 
 // .../devise-api/public/convert?source=EUR&target=USD&amount=100 renvoyant { ... } 
 deviseApiRouter.route('/devise-api/public/convert')
 .get(asyncToResp(async function(req :Request, res :Response , next: NextFunction){
-    const  codeSrc = req.query.source;
-    const  codeTarget = req.query.target;
+    const  codeSrc : string = req.query.source as string;
+    const  codeTarget : string  = req.query.target as string;
     const  amount = Number(req.query.amount);
     const deviseSrc = await deviseService.findById(codeSrc);
     const deviseTarget = await deviseService.findById(codeTarget)

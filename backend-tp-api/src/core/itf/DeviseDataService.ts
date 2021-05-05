@@ -9,4 +9,6 @@ export interface DeviseDataService extends BasicCrudService<Devise,string>{
      deleteById(codeDev: string) :Promise<void> ;
      findAll() : Promise<Devise[]> ; 
      */
+
+    findByChangeMini(changeMini:number) : Promise<Devise[]> ;
 }

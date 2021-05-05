@@ -15,5 +15,8 @@ class MemDeviseService extends GenericMemDataService_1.GenericMemDataService {
         this.dataMap.set("GBP", new devise_1.DeviseObject("GBP", "Livre", 0.81));
         this.dataMap.set("JPY", new devise_1.DeviseObject("JPY", "Yen", 132.01));
     }
+    findByChangeMini(changeMini) {
+        throw new Error('Method not implemented.');
+    }
 }
 exports.MemDeviseService = MemDeviseService;

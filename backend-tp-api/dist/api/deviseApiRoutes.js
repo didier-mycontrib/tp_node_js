@@ -4,19 +4,18 @@ exports.deviseApiRouter = void 0;
 const express_1 = require("express");
 //import { ErrorWithStatus , NotFoundError, ConflictError } from '../error/errorWithStatus';
 const apiHandler_1 = require("./apiHandler");
-const MongoDeviseDataService_1 = require("../core/mongo/MongoDeviseDataService");
-const MyAppConfig_1 = require("../config/MyAppConfig");
-const SqliteDeviseDataService_1 = require("../core/sqlite/SqliteDeviseDataService");
+const MyAppConfig_1 = require("../profiles/MyAppConfig");
+const SequelizeDeviseDataService_1 = require("../core/sequelize/SequelizeDeviseDataService");
+const MongooseDeviseDataService_1 = require("../core/mongoose/MongooseDeviseDataService");
 exports.deviseApiRouter = express_1.Router();
 var deviseService = initDeviseService();
 function initDeviseService() {
     if (MyAppConfig_1.MyAppConfig.isNoDB())
         //return new MemDeviseService();
-        //return new NedbDeviseService();
-        return new SqliteDeviseDataService_1.SqliteDeviseService();
+        //return new MongooseDeviseService();
+        return new SequelizeDeviseDataService_1.SequelizeDeviseService();
     else
-        return new MongoDeviseDataService_1.MongoDeviseService();
-    //return new SqliteDeviseService();
+        return new MongooseDeviseDataService_1.MongooseDeviseService();
 }
 // .../devise-api/public/devise/EUR ou ...
 exports.deviseApiRouter.route('/devise-api/public/devise/:code')
@@ -29,12 +28,19 @@ exports.deviseApiRouter.route('/devise-api/public/devise/:code')
 // http://localhost:8282/devise-api/public/devise?changeMini=1.1 renvoyant [{}] selon critere
 exports.deviseApiRouter.route('/devise-api/public/devise')
     .get(apiHandler_1.asyncToResp(async function (req, res, next) {
-    let changeMini = req.query.changeMini;
-    let deviseArray = await deviseService.findAll();
-    if (changeMini) {
-        //filtrage selon critère changeMini:
-        deviseArray = deviseArray.filter((dev) => dev.change >= changeMini);
-    }
+    let changeMini = Number(req.query.changeMini);
+    let deviseArray = await deviseService.findByChangeMini(changeMini);
+    /*
+    var filter=changeMini?{ change : { $gte : changeMini } }:{};
+    let deviseArray = await deviseService.findList(filter);
+    */
+    /*
+       let deviseArray = await deviseService.findAll();
+       if(changeMini){
+               //filtrage selon critère changeMini:
+               deviseArray = deviseArray.filter((dev)=>dev.change >= changeMini);
+           }
+      */
     return deviseArray;
 }));
 // .../devise-api/public/convert?source=EUR&target=USD&amount=100 renvoyant { ... } 

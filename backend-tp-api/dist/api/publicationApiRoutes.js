@@ -2,17 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.publicationApiRouter = void 0;
 const express_1 = require("express");
-const MongoPublicationDataService_1 = require("../core/mongo/MongoPublicationDataService");
 const apiHandler_1 = require("./apiHandler");
-const MyAppConfig_1 = require("../config/MyAppConfig");
-const SqlitePublicationDataService_1 = require("../core/sqlite/SqlitePublicationDataService");
+const MyAppConfig_1 = require("../profiles/MyAppConfig");
+const SequelizePublicationDataService_1 = require("../core/sequelize/SequelizePublicationDataService");
+const MongoosePublicationDataService_1 = require("../core/mongoose/MongoosePublicationDataService");
 var publicationService = initPublicationService();
 function initPublicationService() {
     if (MyAppConfig_1.MyAppConfig.isNoDB())
         //return new MemPublicationService();
-        return new SqlitePublicationDataService_1.SqlitePublicationService();
+        return new SequelizePublicationDataService_1.SequelizePublicationService();
     else
-        return new MongoPublicationDataService_1.MongoPublicationService();
+        return new MongoosePublicationDataService_1.MongoosePublicationService();
 }
 exports.publicationApiRouter = express_1.Router();
 // http://localhost:8282/news-api/public/publication renvoyant tout [ {} , {}]

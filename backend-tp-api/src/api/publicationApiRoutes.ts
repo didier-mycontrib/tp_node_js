@@ -2,19 +2,19 @@ import { Request, Response ,NextFunction, Router} from 'express';
 import * as  fileUpload  from 'express-fileupload';
 type UploadedFile = fileUpload.UploadedFile;
 import { PublicationDataService } from '../core/itf/PublicationDataService';
-import { MongoPublicationService } from '../core/mongo/MongoPublicationDataService';
 import { asyncToResp } from './apiHandler';
-import { MyAppConfig } from '../config/MyAppConfig';
+import { MyAppConfig } from '../profiles/MyAppConfig';
 import { MemPublicationService} from "../core/mem/MemPublicationDataService";
-import { SqlitePublicationService} from "../core/sqlite/SqlitePublicationDataService";
+import { SequelizePublicationService } from '../core/sequelize/SequelizePublicationDataService';
+import { MongoosePublicationService } from '../core/mongoose/MongoosePublicationDataService';
 
 var  publicationService : PublicationDataService  = initPublicationService();
 function initPublicationService() : PublicationDataService {
   if(MyAppConfig.isNoDB())
        //return new MemPublicationService();
-       return new SqlitePublicationService();
+       return new SequelizePublicationService();
   else
-       return new MongoPublicationService();
+       return new MongoosePublicationService();
 }
 
 export const publicationApiRouter = Router();

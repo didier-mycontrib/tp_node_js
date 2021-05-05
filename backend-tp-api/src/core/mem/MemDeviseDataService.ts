@@ -20,6 +20,9 @@ export class MemDeviseService
         this.dataMap.set("JPY", new DeviseObject("JPY" , "Yen" , 132.01));
     }
 
+    findByChangeMini(changeMini: number): Promise<Devise[]> {
+        throw new Error('Method not implemented.');
+    }
     
 
 }

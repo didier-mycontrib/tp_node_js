@@ -9,17 +9,23 @@ npm install --save-dev mocha
 npm install --save-dev @types/chai
 npm install --save-dev @types/chai-http
 npm install --save-dev @types/mocha
- 
 
-npm install -s mongodb
-npm install --save-dev @types/mongodb
 
 #NB: sqlite3 (compatible sequelize) est une minibase embarquée au format SQL
 # un peu équivalent à h2 du monde java
+
+
+npm install -s mongoose
+npm install --save-dev @types/mongoose
+npm install -s mongoose-auto-increment (optional plugin)
+npm install --save-dev @types/mongoose-auto-increment
+
+
+Need of "skipLibCheck": true, in tsconfig.json due to errors in @types/mongoose .
+
+npm install -s sequelize
+npm install --save-dev @types/sequelize
 npm install -s sqlite3
-npm install --save-dev @types/sqlite3
-
-
 
 npm install -s jsonwebtoken
 npm install --save-dev @types/jsonwebtoken
@@ -43,3 +49,16 @@ La technologie nedb n'est plus maintenue
 
 ===========
 NB: le code generic en version sqlite n'a été que peu testé.
+
+====
+depuis le 05/05/2021 , les anciennes versions "mongo sans mongoose"
+et "sqlite sans sequelize" ont été abandonnées pour céder La
+place à de nouvelles versions basées sur mongoose et sequelize.
+
+les dépendances suivantes ont donc été supprimées:
+
+npm install -s mongodb
+npm install --save-dev @types/mongodb
+
+npm install -s sqlite3
+npm install --save-dev @types/sqlite3

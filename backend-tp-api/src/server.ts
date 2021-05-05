@@ -1,4 +1,4 @@
-import express  from 'express';
+import express  from 'express'; 
 import * as bodyParser from 'body-parser';
 const fileUpload  = require('express-fileupload');
 export const  app :express.Application = express();
@@ -8,7 +8,7 @@ import { deviseApiRouter } from './api/deviseApiRoutes';
 import { publicationApiRouter } from './api/publicationApiRoutes';
 import { loginApiRouter } from './api/loginApiRoutes';
 import { verifTokenInHeadersForPrivatePath, secureModeApiRouter } from './api/verif-auth';
-import { MyAppConfig } from './config/MyAppConfig';
+import { MyAppConfig } from './profiles/MyAppConfig';
 
 
 //PRE TRAITEMENTS (à placer en haut de server.ts)

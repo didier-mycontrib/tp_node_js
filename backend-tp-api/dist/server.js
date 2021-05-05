@@ -12,7 +12,7 @@ const deviseApiRoutes_1 = require("./api/deviseApiRoutes");
 const publicationApiRoutes_1 = require("./api/publicationApiRoutes");
 const loginApiRoutes_1 = require("./api/loginApiRoutes");
 const verif_auth_1 = require("./api/verif-auth");
-const MyAppConfig_1 = require("./config/MyAppConfig");
+const MyAppConfig_1 = require("./profiles/MyAppConfig");
 //PRE TRAITEMENTS (à placer en haut de server.ts)
 //support parsing of JSON post data
 var jsonParser = bodyParser.json();

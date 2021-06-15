@@ -53,14 +53,15 @@ exports.server = exports.app.listen(process.env.PORT, function () {
     console.log("http://localhost:" + process.env.PORT);
     //console.log("process.argv="+ process.argv);
     if (MyAppConfig_1.MyAppConfig.isNoDB()) {
-        console.log("starting with memoryMap services (no database)");
+        //...
     }
     else {
-        /*
-        //if not called here , initConnections() will be deffered (lazy)
-        myAppConnectionMap.initConnections()
-                          .then((bOk)=>{ console.log("database connections is ok"); });
-        */
+        //... 
     }
+    /*
+    myAppConnectionMap.initConnections()
+    .then((bOk)=>{ console.log("database connections is ok"); })
+    .catch((err)=>{console.log("database error:" + JSON.stringify(err)); } );
+    */
     console.log("rest express node server listening at " + process.env.PORT);
 });

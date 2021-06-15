@@ -67,7 +67,7 @@ export class MySequelizeConnection extends MyAbstractDbConnection{
                                  resolve("sequelize connection succeed");
                                  }
                     ).catch( (err:any) => { 
-                        console.log('An error occurred :', err); 
+                        console.log('An error occurred :', JSON.stringify(err)); 
                         reject("sequelize connection fail");
                     });
             }

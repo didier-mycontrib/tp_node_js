@@ -18,7 +18,7 @@ class SequelizeDeviseService extends GenericSequelizeDataService_1.GenericSequel
             this.persistentDeviseModel = model;
             this.initDataSet();
         })
-            .catch((error) => { console.log("erreur initialisation SequelizeDeviseService"); });
+            .catch((error) => { console.log("erreur initialisation SequelizeDeviseService" + JSON.stringify(error)); });
     }
     initDataSet() {
         this.saveOrUpdate(new devise_1.DeviseObject("USD", "Dollar", 1));

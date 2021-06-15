@@ -58,7 +58,7 @@ class MySequelizeConnection extends my_db_connection_1.MyAbstractDbConnection {
                     this.initialized = true;
                     resolve("sequelize connection succeed");
                 }).catch((err) => {
-                    console.log('An error occurred :', err);
+                    console.log('An error occurred :', JSON.stringify(err));
                     reject("sequelize connection fail");
                 });
             }

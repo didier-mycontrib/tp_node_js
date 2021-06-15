@@ -25,7 +25,7 @@ export class SequelizeDeviseService
                 this.persistentDeviseModel = model as any as  DeviseModelStatic;
                 this.initDataSet();
             })
-            .catch((error: Error) => { console.log("erreur initialisation SequelizeDeviseService") });
+            .catch((error: Error) => { console.log("erreur initialisation SequelizeDeviseService" + JSON.stringify(error)) });
         
     }
 

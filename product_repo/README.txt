@@ -5,4 +5,3 @@ utilise une base mongoDB "sessions".
 ==========
 npm install -s express
 npm install -s mongoose
-npm install -s mongoose-auto-increment (optional plugin )

@@ -1,37 +1,38 @@
 var mongoose = require('mongoose');
-var sessionDbMongoosee = require('./session-db-mongoose');
+var customerDbMongoosee = require('./customer-db-mongoose');
 var genericPromiseMongoose = require('./generic-promise-mongoose');//generic helper for entity model with  .id , ._id
 
-var thisDb = sessionDbMongoosee.thisDb;
+var thisDb = customerDbMongoosee.thisDb;
 
 //NB: This is for current entity type ("Devise" or "Customer" or "Product" or ...)
 //NB: thisSechema end ThisPersistentModel should not be exported (private only in this current module)
 var thisSchema;//mongoose Shcema (structure of mongo document)
 var ThisPersistentModel; //mongoose Model (constructor of persistent ThisPersistentModel)
 
-function initMongooseWithSchemaAndModel () {
 
-    //default auto generated objectId of mongoDB is better than number auto_incr
-    //because it is more unique (no problem with objectId, but risk of same id  if auto_incr is reset)
-   
-    mongoose.Connection = thisDb;
+function initMongooseWithSchemaAndModel () {
+ 
+    mongoose.connection = thisDb;
+
+      //username (as id/pk) of type String should be unique (ex: value of customer email or ...)
+      //username should reference a valid customer in the Customer collection (via a previous query to launch to check)
+
       thisSchema = new mongoose.Schema({
         /* default mongo _id: { type : String , alias : "id" } ,*/
-        title: String,
-        date : String,
-        startTime : String,
-        unitPrice : Number,
-        description : String,
-        maxNbPlaces : Number
+        _id: { type : String , alias : "username" } ,
+        password: String
       });
-      thisSchema.set('id',true); //virtual id alias as string for _id
+      thisSchema.set('id',false); //no default virtual id alias as string for _id
       thisSchema.set('toJSON', { virtuals: true , 
                                    versionKey:false,
                                    transform: function (doc, ret) {   delete ret._id; delete ret._v;  }
-                                 });                             
+                                 });
+                           
       //console.log("mongoose thisSchema : " + JSON.stringify(thisSchema) );
-      //"Session" model name is "sessions" collection name in mongoDB session_db database
-      ThisPersistentModel = mongoose.model('Session', thisSchema);
+      //"Account" model name is "accounts" collection name in mongoDB customer_db database
+      ThisPersistentModel = mongoose.model('Account', thisSchema);
+      
+      //console.log("mongoose PersistentAccountModel : " + ThisPersistentModel );
 }
 
 initMongooseWithSchemaAndModel();
@@ -45,9 +46,9 @@ function reinit_db(){
           reject(err);
         }
         //insert elements after deleting olds
-        (new ThisPersistentModel({ _id : '618d53514e0720e69e2e54c8' ,title : "La flute enchantee" , date : "2022-01-12" , startTime : "15:30" , unitPrice : 30 , description : "Opera de Mozart" , maxNbPlaces : 300})).save();
-        (new ThisPersistentModel({ _id : '618d53514e0720e69e2e54c9' , title : "La traviata" , date : "2022-02-20" , startTime : "18:30" , unitPrice : 30 , description : "Opera de Verdi" , maxNbPlaces : 300})).save();
-        resolve({action:"session database re-initialized"})
+        (new ThisPersistentModel({ username : "alexTherieur" , password : "pwd1"  })).save();
+        (new ThisPersistentModel({ username : "jeanBon" , password : "pwd2"  })).save();
+        resolve({action:"account collection re-initialized"})
       })
   });
 }
@@ -66,7 +67,7 @@ function save(entity) {
 }
 
 function updateOne(newValueOfEntityToUpdate) {
-  return genericPromiseMongoose.updateOneWithModel(newValueOfEntityToUpdate,newValueOfEntityToUpdate.id,ThisPersistentModel);
+  return genericPromiseMongoose.updateOneWithModel(newValueOfEntityToUpdate,newValueOfEntityToUpdate.username,ThisPersistentModel);
 }
 
 function deleteOne(idOfEntityToDelete) {

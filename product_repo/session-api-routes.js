@@ -2,12 +2,8 @@ var express = require('express');
 const apiRouter = express.Router();
 
 var sessionDao = require('./session-dao-mongoose');
-var PersistentSessionModel; //to use only for specific extra request (not in dao)
-sessionDao.initMongooseWithSchemaAndModel(
-	function(InitializedPersistentSessionModel) {
-		PersistentSessionModel=InitializedPersistentSessionModel
-	}
-);
+var PersistentSessionModel = sessionDao.ThisPersistentModel; //to use only for specific extra request (not in dao)
+
 
 function statusCodeFromEx(ex){
 	let status = 500;
@@ -33,10 +29,10 @@ apiRouter.route('/session-api/private/role-admin/reinit')
     } 
 });
 
-//exemple URL: http://localhost:8230/session-api/public/session/1
+//exemple URL: http://localhost:8230/session-api/public/session/618d53514e0720e69e2e54c8
 apiRouter.route('/session-api/public/session/:id')
 .get( async function(req , res  , next ) {
-	var idSession = Number(req.params.id);
+	var idSession = req.params.id;//Number(req.params.id); in old v1 with auto_incr
    /*
    //V1 (direct use of mogoose PersistentSessionModel):
 	PersistentSessionModel.findById(idSession ,	function(err,session){
@@ -88,7 +84,7 @@ apiRouter.route('/session-api/private/role-admin/session')
 
 
 // http://localhost:8230/session-api/private/role-admin/session en mode PUT
-// avec { "id" : 1 , "title":"la flute tres enchantee","date":"2022-01-10","startTime":"15:30","unitPrice":20,
+// avec { "id" : "618d53514e0720e69e2e54c8" , "title":"la flute tres enchantee","date":"2022-01-10","startTime":"15:30","unitPrice":20,
 //       "description":"super opera de Mozart","maxNbPlaces":200 } dans req.body
 apiRouter.route('/session-api/private/role-admin/session')
 .put( async function(req , res  , next ) {
@@ -102,10 +98,10 @@ apiRouter.route('/session-api/private/role-admin/session')
     }
 });
 
-//exemple URL: http://localhost:8230/session-api/private/role-admin/session/3 en mode DELETE
+//exemple URL: http://localhost:8230/session-api/private/role-admin/session/618d53514e0720e69e2e54c8 en mode DELETE
 apiRouter.route('/session-api/private/role-admin/session/:id')
 .delete( async function(req , res  , next ) {
-	var idSession = Number(req.params.id);
+	var idSession = req.params.id;//Number(req.params.id); in old v1 with auto_incr
 	console.log("DELETE,idSession="+idSession);
 	try{
 		let deleteActionMessage = await sessionDao.deleteOne(idSession);

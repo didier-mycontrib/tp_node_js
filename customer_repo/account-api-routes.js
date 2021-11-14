@@ -45,9 +45,9 @@ apiRouter.route('/customer-api/private/authorized/account')
 });
 
 
-// http://localhost:8231/customer-api/private/authorized/account en mode post
+// http://localhost:8231/customer-api/public/account en mode post
 // avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
-apiRouter.route('/customer-api/private/authorized/account')
+apiRouter.route('/customer-api/public/account')
 .post(async function(req , res  , next ) {
 	var nouveauCompte = req.body;
 	console.log("POST,nouveauCompte="+JSON.stringify(nouveauCompte));

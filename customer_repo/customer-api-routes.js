@@ -32,8 +32,8 @@ apiRouter.route('/customer-api/private/role-admin/reinit')
     } 
 });
 
-//exemple URL: http://localhost:8231/customer-api/public/customer/618d54d5386fcff631470c76
-apiRouter.route('/customer-api/public/customer/:id')
+//exemple URL: http://localhost:8231/customer-api/private/authorized/customer/618d54d5386fcff631470c76
+apiRouter.route('/customer-api/private/authorized/customer/:id')
 .get( async function(req , res  , next ) {
 	var idcustomer = req.params.id; //Number(req.params.id);  in old v1
 	try{
@@ -59,10 +59,10 @@ apiRouter.route('/customer-api/public/customer')
 });
 
 
-// http://localhost:8130/customer-api/private/role-admin/customer en mode post
+// http://localhost:8130/customer-api/public/customer en mode post
 // avec {  "firstName" : "jean" , "lastName" : "Aimare" , "username" : "jeanAimare"" , "birthDay" : "1977/03/21" ,  
 //         "email" : "jean.aimare@labas.fr" , "mobilePhoneNumber" : "0601020304"} dans req.body
-apiRouter.route('/customer-api/private/role-admin/customer')
+apiRouter.route('/customer-api/public/customer')
 .post(async function(req , res  , next ) {
 	var nouvellecustomer = req.body;
 	console.log("POST,nouvellecustomer="+JSON.stringify(nouvellecustomer));

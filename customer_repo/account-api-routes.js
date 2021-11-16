@@ -18,10 +18,15 @@ function statusCodeFromEx(ex){
 	return status;
 }
 
+/*
+Nouvelle convention d'URL :
+http://localhost:8231/customer-api/xyz en accès par défaut private (avec auth nécessaire)
+http://localhost:8231/customer-api/public-xyz en accès public (sans auth nécessaire)
+*/
 
 
-//exemple URL: http://localhost:8231/customer-api/private/authorized/account/usernameXy
-apiRouter.route('/customer-api/private/authorized/account/:username')
+//exemple URL: http://localhost:8231/customer-api/account/usernameXy
+apiRouter.route('/customer-api/account/:username')
 .get( async function(req , res  , next ) {
 	var username = req.params.username;
 	try{
@@ -32,8 +37,8 @@ apiRouter.route('/customer-api/private/authorized/account/:username')
     } 
 });
 
-//exemple URL: http://localhost:8231/customer-api/private/authorized/account (returning all customer)
-apiRouter.route('/customer-api/private/authorized/account')
+//exemple URL: http://localhost:8231/customer-api/account (returning all customer)
+apiRouter.route('/customer-api/account')
 .get( async function(req , res  , next ) {
 	var criteria={};
 	try{
@@ -45,9 +50,9 @@ apiRouter.route('/customer-api/private/authorized/account')
 });
 
 
-// http://localhost:8231/customer-api/public/account en mode post
+// http://localhost:8231/customer-api/public-account en mode post
 // avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
-apiRouter.route('/customer-api/public/account')
+apiRouter.route('/customer-api/public-account')
 .post(async function(req , res  , next ) {
 	var nouveauCompte = req.body;
 	console.log("POST,nouveauCompte="+JSON.stringify(nouveauCompte));
@@ -59,11 +64,33 @@ apiRouter.route('/customer-api/public/account')
     }
 });
 
+// http://localhost:8231/customer-api/public-login en mode post
+// avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
+apiRouter.route('/customer-api/public-login')
+.post(async function(req , res  , next ) {
+	var login = req.body;
+	console.log("POST login,compte à verifier="+JSON.stringify(login));
+	try{
+		let account = await accountDao.findById( username);
+		if(account.password == login.password)
+			res.send({username : username ,
+       		          status : true ,
+			           message : "successful login" });	
+        else res.status(401).send({username : username ,
+       		           status : false ,
+			           message : "wrong password" });					   
+    } catch(ex){
+	    res.status(404).send({username : username ,
+       		                  status : false ,
+			                  message : "invalid username" });
+    }
+});
 
 
-// http://localhost:8231/customer-api/private/authorized/account en mode PUT
+
+// http://localhost:8231/customer-api/account en mode PUT
 // avec { "username" : "jeanAimare" , "password" : "pwdA" } dans req.body
-apiRouter.route('/customer-api/private/authorized/account')
+apiRouter.route('/customer-api/account')
 .put( async function(req , res  , next ) {
 	var newValueOfAccountToUpdate = req.body;
 	console.log("PUT,newValueOfAccountToUpdate="+JSON.stringify(newValueOfAccountToUpdate));
@@ -75,8 +102,8 @@ apiRouter.route('/customer-api/private/authorized/account')
     }
 });
 
-//exemple URL: http://localhost:8231/customer-api/private/authorized/account/jeanAimare en mode DELETE
-apiRouter.route('/customer-api/private/authorized/account/:username')
+//exemple URL: http://localhost:8231/customer-api/account/jeanAimare en mode DELETE
+apiRouter.route('/customer-api/account/:username')
 .delete( async function(req , res  , next ) {
 	var username = req.params.username;
 	console.log("DELETE,username="+username);

@@ -18,8 +18,14 @@ function statusCodeFromEx(ex){
 	return status;
 }
 
-//exemple URL: http://localhost:8230/session-api/private/role-admin/reinit
-apiRouter.route('/session-api/private/role-admin/reinit')
+/*
+Nouvelle convention d'URL :
+http://localhost:8230/session-api/xyz en accès par défaut private (avec auth nécessaire)
+http://localhost:8230/session-api/public-xyz en accès public (sans auth nécessaire)
+*/
+
+//exemple URL: http://localhost:8230/session-api/reinit
+apiRouter.route('/session-api/reinit')
 .get( async function(req , res  , next ) {
 	try{
 		let doneActionMessage = await sessionDao.reinit_db();
@@ -29,8 +35,8 @@ apiRouter.route('/session-api/private/role-admin/reinit')
     } 
 });
 
-//exemple URL: http://localhost:8230/session-api/public/session/618d53514e0720e69e2e54c8
-apiRouter.route('/session-api/public/session/:id')
+//exemple URL: http://localhost:8230/session-api/public-session/618d53514e0720e69e2e54c8
+apiRouter.route('/session-api/public-session/:id')
 .get( async function(req , res  , next ) {
 	var idSession = req.params.id;//Number(req.params.id); in old v1 with auto_incr
    /*
@@ -50,9 +56,9 @@ apiRouter.route('/session-api/public/session/:id')
     } 
 });
 
-//exemple URL: http://localhost:8230/session-api/public/session (returning all session)
-//             http://localhost:8230/session-api/public/session?titleLike=lafluteenchantee
-apiRouter.route('/session-api/public/session')
+//exemple URL: http://localhost:8230/session-api/public-session (returning all session)
+//             http://localhost:8230/session-api/public-session?titleLike=lafluteenchantee
+apiRouter.route('/session-api/public-session')
 .get( async function(req , res  , next ) {
 	var titleLike = req.query.titleLike;
 	//var criteria=title?{ title: title }:{};
@@ -66,10 +72,10 @@ apiRouter.route('/session-api/public/session')
 });
 
 
-// http://localhost:8230/session-api/private/role-admin/session en mode post
+// http://localhost:8230/session-api/session en mode post
 // avec {"title":"titre_xy","date":"2022-01-10","startTime":"15:30","unitPrice":20,
 //       "description":"...","maxNbPlaces":200 } dans req.body
-apiRouter.route('/session-api/private/role-admin/session')
+apiRouter.route('/session-api/session')
 .post(async function(req , res  , next ) {
 	var nouvelleSession = req.body;
 	console.log("POST,nouvelleSession="+JSON.stringify(nouvelleSession));
@@ -83,10 +89,10 @@ apiRouter.route('/session-api/private/role-admin/session')
 
 
 
-// http://localhost:8230/session-api/private/role-admin/session en mode PUT
+// http://localhost:8230/session-api/session en mode PUT
 // avec { "id" : "618d53514e0720e69e2e54c8" , "title":"la flute tres enchantee","date":"2022-01-10","startTime":"15:30","unitPrice":20,
 //       "description":"super opera de Mozart","maxNbPlaces":200 } dans req.body
-apiRouter.route('/session-api/private/role-admin/session')
+apiRouter.route('/session-api/session')
 .put( async function(req , res  , next ) {
 	var newValueOfSessionToUpdate = req.body;
 	console.log("PUT,newValueOfSessionToUpdate="+JSON.stringify(newValueOfSessionToUpdate));
@@ -98,8 +104,8 @@ apiRouter.route('/session-api/private/role-admin/session')
     }
 });
 
-//exemple URL: http://localhost:8230/session-api/private/role-admin/session/618d53514e0720e69e2e54c8 en mode DELETE
-apiRouter.route('/session-api/private/role-admin/session/:id')
+//exemple URL: http://localhost:8230/session-api/session/618d53514e0720e69e2e54c8 en mode DELETE
+apiRouter.route('/session-api/session/:id')
 .delete( async function(req , res  , next ) {
 	var idSession = req.params.id;//Number(req.params.id); in old v1 with auto_incr
 	console.log("DELETE,idSession="+idSession);

@@ -20,8 +20,14 @@ function statusCodeFromEx(ex){
 	return status;
 }
 
-//exemple URL: http://localhost:8232/reservation-api/private/role-admin/reinit
-apiRouter.route('/reservation-api/private/role-admin/reinit')
+/*
+Nouvelle convention d'URL :
+http://localhost:8232/reservation-api/xyz en accès par défaut private (avec auth nécessaire)
+http://localhost:8232/reservation-api/public-xyz en accès public (sans auth nécessaire)
+*/
+
+//exemple URL: http://localhost:8232/reservation-api/reinit
+apiRouter.route('/reservation-api/reinit')
 .get( async function(req , res  , next ) {
 	try{
 		let doneActionMessage1 = await customerInfoDao.reinit_db();
@@ -33,8 +39,8 @@ apiRouter.route('/reservation-api/private/role-admin/reinit')
     } 
 });
 
-//exemple URL: http://localhost:8232/reservation-api/public/reservation/618d647c42a5f45f95e13be5
-apiRouter.route('/reservation-api/public/reservation/:id')
+//exemple URL: http://localhost:8232/reservation-api/reservation/618d647c42a5f45f95e13be5
+apiRouter.route('/reservation-api/reservation/:id')
 .get( async function(req , res  , next ) {
 	var idreservation = req.params.id;
    /*
@@ -54,9 +60,9 @@ apiRouter.route('/reservation-api/public/reservation/:id')
     } 
 });
 
-//exemple URL: http://localhost:8232/reservation-api/public/reservation (returning all reservation)
-//             http://localhost:8232/reservation-api/public/reservation?sessionId=618d53514e0720e69e2e54c8
-apiRouter.route('/reservation-api/public/reservation')
+//exemple URL: http://localhost:8232/reservation-api/reservation (returning all reservation)
+//             http://localhost:8232/reservation-api/reservation?sessionId=618d53514e0720e69e2e54c8
+apiRouter.route('/reservation-api/reservation')
 .get( async function(req , res  , next ) {
 	var sessionId = req.query.sessionId;
 	var criteria=sessionId?{ session : sessionId }:{};
@@ -69,9 +75,9 @@ apiRouter.route('/reservation-api/public/reservation')
 });
 
 
-// http://localhost:8232/reservation-api/private/role-admin/reservation en mode post
+// http://localhost:8232/reservation-api/reservation en mode post
 // avec { "datetime" : "2021-11-12 15:00:00.000" , "nbPlaces" : 3 } dans req.body
-apiRouter.route('/reservation-api/private/role-admin/reservation')
+apiRouter.route('/reservation-api/reservation')
 .post(async function(req , res  , next ) {
 	var nouvellereservation = req.body;
 	console.log("POST,nouvellereservation="+JSON.stringify(nouvellereservation));
@@ -85,9 +91,9 @@ apiRouter.route('/reservation-api/private/role-admin/reservation')
 
 
 
-// http://localhost:8232/reservation-api/private/role-admin/reservation en mode PUT
+// http://localhost:8232/reservation-api/reservation en mode PUT
 // avec { "id" : "618d647c42a5f45f95e13be5" , "datetime" : "2021-11-12 15:00:00.000" , "nbPlaces" : 6 } dans req.body
-apiRouter.route('/reservation-api/private/role-admin/reservation')
+apiRouter.route('/reservation-api/reservation')
 .put( async function(req , res  , next ) {
 	var newValueOfreservationToUpdate = req.body;
 	console.log("PUT,newValueOfreservationToUpdate="+JSON.stringify(newValueOfreservationToUpdate));
@@ -99,8 +105,8 @@ apiRouter.route('/reservation-api/private/role-admin/reservation')
     }
 });
 
-//exemple URL: http://localhost:8232/reservation-api/private/role-admin/reservation/618d647c42a5f45f95e13be5 en mode DELETE
-apiRouter.route('/reservation-api/private/role-admin/reservation/:id')
+//exemple URL: http://localhost:8232/reservation-api/reservation/618d647c42a5f45f95e13be5 en mode DELETE
+apiRouter.route('/reservation-api/reservation/:id')
 .delete( async function(req , res  , next ) {
 	var idreservation = req.params.id;
 	console.log("DELETE,idreservation="+idreservation);

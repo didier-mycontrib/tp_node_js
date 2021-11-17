@@ -20,8 +20,14 @@ function statusCodeFromEx(ex){
 	return status;
 }
 
-//exemple URL: http://localhost:8231/customer-api/private/role-admin/reinit
-apiRouter.route('/customer-api/private/role-admin/reinit')
+/*
+Nouvelle convention d'URL :
+http://localhost:8231/customer-api/xyz en accès par défaut private (avec auth nécessaire)
+http://localhost:8231/customer-api/public-xyz en accès public (sans auth nécessaire)
+*/
+
+//exemple URL: http://localhost:8231/customer-api/reinit
+apiRouter.route('/customer-api/reinit')
 .get( async function(req , res  , next ) {
 	try{
 		let doneActionMessage1 = await customerDao.reinit_db();
@@ -32,8 +38,8 @@ apiRouter.route('/customer-api/private/role-admin/reinit')
     } 
 });
 
-//exemple URL: http://localhost:8231/customer-api/private/authorized/customer/618d54d5386fcff631470c76
-apiRouter.route('/customer-api/private/authorized/customer/:id')
+//exemple URL: http://localhost:8231/customer-api/customer/618d54d5386fcff631470c76
+apiRouter.route('/customer-api/customer/:id')
 .get( async function(req , res  , next ) {
 	var idcustomer = req.params.id; //Number(req.params.id);  in old v1
 	try{
@@ -44,9 +50,9 @@ apiRouter.route('/customer-api/private/authorized/customer/:id')
     } 
 });
 
-//exemple URL: http://localhost:8231/customer-api/public/customer (returning all customer)
-//             http://localhost:8231/customer-api/public/customer?email=jean.bon@labas.fr
-apiRouter.route('/customer-api/public/customer')
+//exemple URL: http://localhost:8231/customer-api/customer (returning all customer)
+//             http://localhost:8231/customer-api/customer?email=jean.bon@labas.fr
+apiRouter.route('/customer-api/customer')
 .get( async function(req , res  , next ) {
 	var email = req.query.email;
 	var criteria=email?{ email: email }:{};
@@ -59,10 +65,10 @@ apiRouter.route('/customer-api/public/customer')
 });
 
 
-// http://localhost:8130/customer-api/public/customer en mode post
+// http://localhost:8130/customer-api/public-customer en mode post
 // avec {  "firstName" : "jean" , "lastName" : "Aimare" , "username" : "jeanAimare"" , "birthDay" : "1977/03/21" ,  
 //         "email" : "jean.aimare@labas.fr" , "mobilePhoneNumber" : "0601020304"} dans req.body
-apiRouter.route('/customer-api/public/customer')
+apiRouter.route('/customer-api/public-customer')
 .post(async function(req , res  , next ) {
 	var nouvellecustomer = req.body;
 	console.log("POST,nouvellecustomer="+JSON.stringify(nouvellecustomer));
@@ -76,10 +82,10 @@ apiRouter.route('/customer-api/public/customer')
 
 
 
-// http://localhost:8231/customer-api/private/role-admin/customer en mode PUT
+// http://localhost:8231/customer-api/customer en mode PUT
 // avec { "id" : "618d54d5386fcff631470c76" ,  "firstName" : "jeanJean" , "lastName" : "AiPlusQueMare" , "username" : "jeanAimare" , "birthDay" : "1977/08/22" ,  
 //         "email" : "jean.aiPlusQueMare@labas.fr" , "mobilePhoneNumber" : "0601020304"} dans req.body
-apiRouter.route('/customer-api/private/role-admin/customer')
+apiRouter.route('/customer-api/customer')
 .put( async function(req , res  , next ) {
 	var newValueOfcustomerToUpdate = req.body;
 	console.log("PUT,newValueOfcustomerToUpdate="+JSON.stringify(newValueOfcustomerToUpdate));
@@ -91,8 +97,8 @@ apiRouter.route('/customer-api/private/role-admin/customer')
     }
 });
 
-//exemple URL: http://localhost:8231/customer-api/private/role-admin/customer/618d54d5386fcff631470c76 en mode DELETE
-apiRouter.route('/customer-api/private/role-admin/customer/:id')
+//exemple URL: http://localhost:8231/customer-api/customer/618d54d5386fcff631470c76 en mode DELETE
+apiRouter.route('/customer-api/customer/:id')
 .delete( async function(req , res  , next ) {
 	var idcustomer =  req.params.id; //Number(req.params.id);  in old v1
 	console.log("DELETE,idcustomer="+idcustomer);

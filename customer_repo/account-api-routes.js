@@ -68,7 +68,8 @@ apiRouter.route('/customer-api/public-account')
 // avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
 apiRouter.route('/customer-api/public-login')
 .post(async function(req , res  , next ) {
-	var login = req.body;
+	let login = req.body;
+	let username = login?login.username : null;
 	console.log("POST login,compte à verifier="+JSON.stringify(login));
 	try{
 		let account = await accountDao.findById( username);

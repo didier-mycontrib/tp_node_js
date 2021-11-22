@@ -43,14 +43,7 @@ apiRouter.route('/reservation-api/reinit')
 apiRouter.route('/reservation-api/reservation/:id')
 .get( async function(req , res  , next ) {
 	var idreservation = req.params.id;
-   /*
-   //V1 (direct use of mogoose PersistentreservationModel):
-	PersistentReservationModel.findById(idreservation ,	function(err,reservation){
-			if(err || reservation==null)
-			   res.status(404).send({err:'not found'});
-			else
-			  res.send(reservation);
-    */
+   
 	//V2: with ad hoc function of dao (returning Promise)
 	try{
 		let reservation = await reservationDao.findById( idreservation);
@@ -62,10 +55,12 @@ apiRouter.route('/reservation-api/reservation/:id')
 
 //exemple URL: http://localhost:8232/reservation-api/reservation (returning all reservation)
 //             http://localhost:8232/reservation-api/reservation?sessionId=618d53514e0720e69e2e54c8
+//             http://localhost:8232/reservation-api/reservation?customerId=618d54d5386fcff631470c76
 apiRouter.route('/reservation-api/reservation')
 .get( async function(req , res  , next ) {
-	var sessionId = req.query.sessionId;
-	var criteria=sessionId?{ session : sessionId }:{};
+	let sessionId = req.query.sessionId;
+	let customerId = req.query.customerId;
+	let criteria=sessionId?{ session : sessionId }:(customerId?{ customer : customerId }:{});
 	try{
 		let reservations = await reservationDao.findByCriteria(criteria);
 		res.send(reservations);

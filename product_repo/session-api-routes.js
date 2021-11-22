@@ -61,6 +61,26 @@ apiRouter.route('/session-api/public-session/:id')
 apiRouter.route('/session-api/public-session')
 .get( async function(req , res  , next ) {
 	var titleLike = req.query.titleLike;
+	/*
+	let sEnBase64 = req.query.p; //récupération de ...?p=valeurEnBase64
+	console.log("en base64 p="+sEnBase64);
+	let strUrlEncoded=Buffer.from(sEnBase64, 'base64').toString();
+	console.log("strUrlEncoded="+strUrlEncoded);
+	let str = decodeURIComponent(strUrlEncoded); 
+    console.log("str="+str);
+	
+	//si besoin encode urlEncoded coté nodeJs:
+	let urlEncodedString = encodeURIComponent(str)
+    console.log("urlEncodedString="+urlEncodedString);
+	//si besoin encodage base64 du coté nodeJs:
+	let s2EnBase64 = Buffer.from(urlEncodedString).toString('base64');
+	console.log("s2EnBase64="+s2EnBase64);
+	let str2UrlEncoded=Buffer.from(s2EnBase64, 'base64').toString();
+	console.log("str2UrlEncoded="+str2UrlEncoded);
+	let str2 = decodeURIComponent(str2UrlEncoded); 
+    console.log("str2="+str2);
+	*/
+	
 	//var criteria=title?{ title: title }:{};
 	var criteria=titleLike?{ title: { $regex: titleLike } }:{};
 	try{

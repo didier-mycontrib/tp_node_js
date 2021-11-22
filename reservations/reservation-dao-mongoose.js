@@ -40,8 +40,8 @@ function reinit_db(){
           reject(err);
         }
         //insert elements after deleting olds
-        (new ThisPersistentModel({ _id: "618d647c42a5f45f95e13be4" , datetime : "2021-11-12 15:00:00.000" , nbPlaces : 3 , customer : "618d54d5386fcff631470c76" , session: "618d53514e0720e69e2e54c8"})).save();
-        (new ThisPersistentModel({ _id: "618d647c42a5f45f95e13be5" , datetime : "2021-11-22 16:00:00.000" , nbPlaces : 1 , customer : "618d54d5386fcff631470c78" , session: "618d53514e0720e69e2e54c8"})).save();
+        (new ThisPersistentModel({ _id: "618d647c42a5f45f95e13be4" , datetime : "2021-11-12 15:00:00" , nbPlaces : 3 , customer : "618d54d5386fcff631470c76" , session: "618d53514e0720e69e2e54c8"})).save();
+        (new ThisPersistentModel({ _id: "618d647c42a5f45f95e13be5" , datetime : "2021-11-22 16:00:00" , nbPlaces : 1 , customer : "618d54d5386fcff631470c78" , session: "618d53514e0720e69e2e54c8"})).save();
         resolve({action:"reservations collection re-initialized"})
       })
   });

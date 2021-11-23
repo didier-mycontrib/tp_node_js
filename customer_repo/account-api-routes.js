@@ -2,6 +2,8 @@ var express = require('express');
 const apiRouter = express.Router();
 
 var accountDao = require('./account-dao-mongoose');
+var myGenericFetcher = require('./generic-http-fetcher');
+//var FormData = require('form-data');
 var PersistentCustomerModel = accountDao.ThisPersistentModel; //to use only for specific extra request (not in dao)
 
 
@@ -20,13 +22,13 @@ function statusCodeFromEx(ex){
 
 /*
 Nouvelle convention d'URL :
-http://localhost:8231/customer-api/xyz en accès par défaut private (avec auth nécessaire)
-http://localhost:8231/customer-api/public-xyz en accès public (sans auth nécessaire)
+http://localhost:8231/customer-api/private/xyz en accès private (avec auth nécessaire)
+http://localhost:8231/customer-api/public/xyz en accès public (sans auth nécessaire)
 */
 
 
-//exemple URL: http://localhost:8231/customer-api/account/usernameXy
-apiRouter.route('/customer-api/account/:username')
+//exemple URL: http://localhost:8231/customer-api/private/account/usernameXy
+apiRouter.route('/customer-api/private/account/:username')
 .get( async function(req , res  , next ) {
 	var username = req.params.username;
 	try{
@@ -37,8 +39,8 @@ apiRouter.route('/customer-api/account/:username')
     } 
 });
 
-//exemple URL: http://localhost:8231/customer-api/account (returning all customer)
-apiRouter.route('/customer-api/account')
+//exemple URL: http://localhost:8231/customer-api/private/account (returning all customer)
+apiRouter.route('/customer-api/private/account')
 .get( async function(req , res  , next ) {
 	var criteria={};
 	try{
@@ -50,9 +52,9 @@ apiRouter.route('/customer-api/account')
 });
 
 
-// http://localhost:8231/customer-api/public-account en mode post
+// http://localhost:8231/customer-api/public/account en mode post
 // avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
-apiRouter.route('/customer-api/public-account')
+apiRouter.route('/customer-api/public/account')
 .post(async function(req , res  , next ) {
 	var nouveauCompte = req.body;
 	console.log("POST,nouveauCompte="+JSON.stringify(nouveauCompte));
@@ -64,34 +66,74 @@ apiRouter.route('/customer-api/public-account')
     }
 });
 
-// http://localhost:8231/customer-api/public-login en mode post
+// http://localhost:8231/customer-api/public/login en mode post
 // avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
-apiRouter.route('/customer-api/public-login')
+apiRouter.route('/customer-api/public/login')
 .post(async function(req , res  , next ) {
 	let login = req.body;
 	let username = login?login.username : null;
 	console.log("POST login,compte à verifier="+JSON.stringify(login));
 	try{
 		let account = await accountDao.findById( username);
-		if(account.password == login.password)
+		if(account.password == login.password){
+			let token = null;
+			
+		//tentative de recupération de access_token depuis kong api-gateway et plugin oauth2
+			let url = "https://xyz.mycompany.fun:8443/customer-api/private/oauth2/token";
+			let mode = 'post';
+			
+			let inputData = {client_id : "CLIENT_ID_RESA",
+			                 client_secret : "CLIENT_SECRET_RESA",
+	                         scope : "read",
+							 grant_type : "password",
+                             authenticated_userid : username,
+							 provision_key : "my_not_generated_provision_key" }            
+			
+			token = await myGenericFetcher.myGenericJsonFetch(url,mode,inputData);
+			
 			res.send({username : username ,
        		          status : true ,
-			           message : "successful login" });	
+					  token : token,
+			          message : "successful login" });	
+		}
         else res.status(401).send({username : username ,
-       		           status : false ,
+       		           status : false , token : null,
 			           message : "wrong password" });					   
     } catch(ex){
 	    res.status(404).send({username : username ,
-       		                  status : false ,
-			                  message : "invalid username" });
+       		                  status : false , token : null,
+			                  message : "invalid username"});
+    }
+});
+
+// http://localhost:8231/customer-api/public/fetch en mode get
+apiRouter.route('/customer-api/public/fetch')
+.get(async function(req , res  , next ) {
+	/*
+	Test1 (en mode get):
+	let url = "http://data.fixer.io/api/latest?access_key=26ca93ee7fc19cbe0a423aaa27cab235" //ici avec api-key de didier
+		//type de réponse attendue:
+		{"success":true,"timestamp":1635959583,"base":"EUR","date":"2021-11-03",
+		"rates":{"AED":4.254663,"AFN":105.467869,..., "EUR":1 , ...}}
+	*/
+	//Test2 (en mode post):
+	let url = "http://localhost:8234/session-api/private/session";
+	let mode = 'post';
+	let inputData = {title:"titre_xy",date:"2022-01-10",
+	                 startTime:"15:30",unitPrice:20,
+                     description:"description ...",maxNbPlaces:200 }
+	try{
+		let responseData = await myGenericFetcher.myGenericJsonFetch(url,mode,inputData,{},{res:"none"});
+		res.send(responseData);
+    } catch(ex){
+	    res.status(statusCodeFromEx(ex)).send(ex);
     }
 });
 
 
-
-// http://localhost:8231/customer-api/account en mode PUT
+// http://localhost:8231/customer-api/private/account en mode PUT
 // avec { "username" : "jeanAimare" , "password" : "pwdA" } dans req.body
-apiRouter.route('/customer-api/account')
+apiRouter.route('/customer-api/private/account')
 .put( async function(req , res  , next ) {
 	var newValueOfAccountToUpdate = req.body;
 	console.log("PUT,newValueOfAccountToUpdate="+JSON.stringify(newValueOfAccountToUpdate));
@@ -104,7 +146,7 @@ apiRouter.route('/customer-api/account')
 });
 
 //exemple URL: http://localhost:8231/customer-api/account/jeanAimare en mode DELETE
-apiRouter.route('/customer-api/account/:username')
+apiRouter.route('/customer-api/private/account/:username')
 .delete( async function(req , res  , next ) {
 	var username = req.params.username;
 	console.log("DELETE,username="+username);

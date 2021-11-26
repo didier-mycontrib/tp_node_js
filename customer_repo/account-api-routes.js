@@ -66,6 +66,26 @@ apiRouter.route('/customer-api/public/account')
     }
 });
 
+//return Promise<token_or_null>
+async function tryRetreiveKongOAuth2PluginToken(username){
+	let token = null;
+	try{
+		//tentative de recupération de access_token depuis kong api-gateway et plugin oauth2
+		let url = "https://xyz.mycompany.fun:8443/customer-api/private/oauth2/token";
+		let mode = 'post';
+		let inputData = {client_id : "CLIENT_ID_RESA",
+			client_secret : "CLIENT_SECRET_RESA",
+	        scope : "read write delete",
+			grant_type : "password",
+            authenticated_userid : username,
+			provision_key : "my_not_generated_provision_key" }            
+		token = await myGenericFetcher.myGenericJsonFetch(url,mode,inputData);
+	}catch(e){
+		console.log("cannot retreive KongOAuth2PluginToken");
+	}
+	return token;
+}
+
 // http://localhost:8231/customer-api/public/login en mode post
 // avec {  "username" : "jeanAimare" , "password" : "pwd3" } dans req.body
 apiRouter.route('/customer-api/public/login')
@@ -77,20 +97,8 @@ apiRouter.route('/customer-api/public/login')
 		let account = await accountDao.findById( username);
 		if(account.password == login.password){
 			let token = null;
-			
-		//tentative de recupération de access_token depuis kong api-gateway et plugin oauth2
-			let url = "https://xyz.mycompany.fun:8443/customer-api/private/oauth2/token";
-			let mode = 'post';
-			
-			let inputData = {client_id : "CLIENT_ID_RESA",
-			                 client_secret : "CLIENT_SECRET_RESA",
-	                         scope : "read",
-							 grant_type : "password",
-                             authenticated_userid : username,
-							 provision_key : "my_not_generated_provision_key" }            
-			
-			token = await myGenericFetcher.myGenericJsonFetch(url,mode,inputData);
-			
+			token = await tryRetreiveKongOAuth2PluginToken(username);
+		
 			res.send({username : username ,
        		          status : true ,
 					  token : token,

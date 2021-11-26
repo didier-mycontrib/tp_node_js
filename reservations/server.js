@@ -1,6 +1,7 @@
 var express = require('express');
 var reservationApiRoutes = require('./reservation-api-routes');
 var app = express();
+var verifAuth = require('./verif-auth');
 
 //support parsing of JSON post data
 var jsonParser = express.json({  extended: true}); 
@@ -27,6 +28,9 @@ app.use('/html', express.static(__dirname+"/html"));
 app.get('/', function(req , res ) {
   res.redirect('/html/index.html');
 });
+
+//verif auth in request header for private api/path:
+app.use(verifAuth.verifAuthInHeadersForPrivatePath);
 
 app.use(reservationApiRoutes.apiRouter);// delegate REST API routes to apiRouter(s)
 

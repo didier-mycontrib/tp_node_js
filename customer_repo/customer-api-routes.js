@@ -50,12 +50,22 @@ apiRouter.route('/customer-api/private/customer/:id')
     } 
 });
 
+function buildCriteriaFromExclusiveQueryParam(req,...potentialParamNames){
+	let criteria = {};
+	for(pName of potentialParamNames){
+		let pValue = req.query[pName];
+		if(pValue) criteria[pName]=pValue;
+	}
+	return criteria;
+}
+
 //exemple URL: http://localhost:8231/customer-api/private/customer (returning all customer)
 //             http://localhost:8231/customer-api/private/customer?email=jean.bon@labas.fr
+//             http://localhost:8231/customer-api/private/customer?username=jeanBon
 apiRouter.route('/customer-api/private/customer')
 .get( async function(req , res  , next ) {
-	var email = req.query.email;
-	var criteria=email?{ email: email }:{};
+	let criteria=buildCriteriaFromExclusiveQueryParam(req,"email","username")
+	console.log("get customer for criteria="+JSON.stringify(criteria));
 	try{
 		let customers = await customerDao.findByCriteria(criteria);
 		res.send(customers);

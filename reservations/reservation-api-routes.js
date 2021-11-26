@@ -86,7 +86,7 @@ apiRouter.route('/reservation-api/private/reservation')
 
 
 
-// http://localhost:8232/reservation-api/reservation en mode PUT
+// http://localhost:8232/reservation-api/private/reservation en mode PUT
 // avec { "id" : "618d647c42a5f45f95e13be5" , "datetime" : "2021-11-12 15:00:00.000" , "nbPlaces" : 6 } dans req.body
 apiRouter.route('/reservation-api/private/reservation')
 .put( async function(req , res  , next ) {
@@ -100,7 +100,7 @@ apiRouter.route('/reservation-api/private/reservation')
     }
 });
 
-//exemple URL: http://localhost:8232/reservation-api/reservation/618d647c42a5f45f95e13be5 en mode DELETE
+//exemple URL: http://localhost:8232/reservation-api/private/reservation/618d647c42a5f45f95e13be5 en mode DELETE
 apiRouter.route('/reservation-api/private/reservation/:id')
 .delete( async function(req , res  , next ) {
 	var idreservation = req.params.id;

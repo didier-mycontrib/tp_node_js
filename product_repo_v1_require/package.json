@@ -2,8 +2,7 @@
   "name": "product_repo",
   "version": "1.0.0",
   "description": "micro-service \"produits de type session de spectacles\" pour assemblage soa_msa_resa\r =======\r utilise une base mongoDB \"sessions\".",
-  "main": "server.js",
-  "type" : "module", 
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
 	"start": "node server.js"

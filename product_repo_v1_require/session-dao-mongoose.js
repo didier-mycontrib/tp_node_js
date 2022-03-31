@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
-import sessionDbMongoose from './session-db-mongoose.js';
-import genericPromiseMongoose from './generic-promise-mongoose.js';//generic helper for entity model with  .id , ._id
+var mongoose = require('mongoose');
+var sessionDbMongoosee = require('./session-db-mongoose');
+var genericPromiseMongoose = require('./generic-promise-mongoose');//generic helper for entity model with  .id , ._id
 
-var thisDb = sessionDbMongoose.thisDb;
+var thisDb = sessionDbMongoosee.thisDb;
 
 //NB: This is for current entity type ("Devise" or "Customer" or "Product" or ...)
 //NB: thisSechema end ThisPersistentModel should not be exported (private only in this current module)
@@ -73,6 +73,10 @@ function deleteOne(idOfEntityToDelete) {
   return genericPromiseMongoose.deleteOneWithModel(idOfEntityToDelete,ThisPersistentModel);
 }
 
-
-export default { ThisPersistentModel ,  reinit_db ,
-   findById , findByCriteria , save , updateOne ,  deleteOne};
+module.exports.ThisPersistentModel=ThisPersistentModel;
+module.exports.reinit_db = reinit_db;
+module.exports.findById = findById ;
+module.exports.findByCriteria = findByCriteria ;
+module.exports.save = save ;
+module.exports.updateOne = updateOne ;
+module.exports.deleteOne = deleteOne ;

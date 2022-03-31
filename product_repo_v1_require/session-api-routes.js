@@ -1,7 +1,7 @@
-import express from 'express';
+var express = require('express');
 const apiRouter = express.Router();
 
-import sessionDao from './session-dao-mongoose.js';
+var sessionDao = require('./session-dao-mongoose');
 var PersistentSessionModel = sessionDao.ThisPersistentModel; //to use only for specific extra request (not in dao)
 
 
@@ -137,4 +137,4 @@ apiRouter.route('/session-api/private/session/:id')
     }
 });
 
-export  default { apiRouter };
+exports.apiRouter = apiRouter;

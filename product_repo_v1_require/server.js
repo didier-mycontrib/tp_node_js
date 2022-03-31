@@ -1,12 +1,7 @@
-import express from 'express';
+var express = require('express');
+var sessionApiRoutes = require('./session-api-routes');
 var app = express();
-
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-import sessionApiRoutes from './session-api-routes.js';
-import verifAuth from './verif-auth.js';
+var verifAuth = require('./verif-auth');
 
 //support parsing of JSON post data
 var jsonParser = express.json({  extended: true}); 

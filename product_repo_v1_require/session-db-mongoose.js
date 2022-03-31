@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+var mongoose = require('mongoose');
+//var mongooseAutoIncrement = require('mongoose-auto-increment'); //in old v1
 
 var mongoDbUrl = process.env.MONGODB_URL || "mongodb://127.0.0.1:27017"; //by default
 
@@ -8,6 +9,7 @@ mongoose.connect(mongoDbUrl, {useNewUrlParser: true,
 	                              useUnifiedTopology: true , 
 								  dbName : 'session_db'});
 var thisDb  = mongoose.connection;
+//mongooseAutoIncrement.initialize(thisDb);//in old v1
 
 thisDb.on('error' , function() { 
       console.log("mongoDb connection error = " + " for dbUrl=" + mongoDbUrl )
@@ -18,5 +20,5 @@ thisDb.once('open', function() {
       console.log("Connected correctly to mongodb database" );
     });
 
-export default { thisDb } ;
+module.exports.thisDb = thisDb ;
 

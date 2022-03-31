@@ -20,4 +20,5 @@ function verifAuthInHeaders(req,res,next) {
 	//else res.status(401).send("Unauthorized ...");
 }
 
-export default { verifAuthInHeaders , verifAuthInHeadersForPrivatePath }
+module.exports.verifAuthInHeaders = verifAuthInHeaders ;
+module.exports.verifAuthInHeadersForPrivatePath = verifAuthInHeadersForPrivatePath ;	

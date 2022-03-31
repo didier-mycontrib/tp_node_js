@@ -68,5 +68,8 @@ function findByIdWithModel(id,PersistentModel) {
     });
   }
 
-
-export default { findByIdWithModel , findByCriteriaWithModel , saveWithModel , updateOneWithModel , deleteOneWithModel }
+module.exports.findByIdWithModel = findByIdWithModel ;
+module.exports.findByCriteriaWithModel = findByCriteriaWithModel ;
+module.exports.saveWithModel = saveWithModel ;
+module.exports.updateOneWithModel = updateOneWithModel ;
+module.exports.deleteOneWithModel = deleteOneWithModel ;

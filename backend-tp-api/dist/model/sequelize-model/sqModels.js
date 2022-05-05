@@ -20,8 +20,8 @@ class SqModels {
         switch (connectionName) {
             case "sq-test":
                 this.sqModelsMapMap.set(connectionName, new Map());
-                this.addModel(connectionName, "devise", sq_devise_1.initDeviseModel(sequelize));
-                this.addModel(connectionName, "publication", sq_publication_1.initPublicationModel(sequelize));
+                this.addModel(connectionName, "devise", (0, sq_devise_1.initDeviseModel)(sequelize));
+                this.addModel(connectionName, "publication", (0, sq_publication_1.initPublicationModel)(sequelize));
                 break;
             case "other-connection":
                 this.sqModelsMapMap.set(connectionName, new Map());

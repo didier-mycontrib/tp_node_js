@@ -11,7 +11,8 @@ const deviseSchema = new mongoose_1.default.Schema({
 deviseSchema.set('id', false); //no default virtual id alias for _id
 //==> internal ._id , external .code
 deviseSchema.set('toJSON', { virtuals: true,
-    versionKey: false, transform: function (doc, ret) { delete ret._id; }
+    versionKey: false,
+    transform: function (doc, ret) { delete ret._id; }
 });
 // fonction exportée (à appeler) définissant la structure de la table (dans base de données) :
 function initPersistentDeviseModel(cn) {

@@ -17,7 +17,8 @@ const publicationSchema = new mongoose_1.default.Schema({
 publicationSchema.set('id', false); //no default virtual id alias for _id
 //==> internal ._id , external ._id
 publicationSchema.set('toJSON', { virtuals: false,
-    versionKey: false, transform: function (doc, ret) { if (ret._id)
+    versionKey: false,
+    transform: function (doc, ret) { if (ret._id)
         ret._id = ret._id.toString(); }
 });
 // fonction exportée (à appeler) définissant la structure de la table (dans base de données) :

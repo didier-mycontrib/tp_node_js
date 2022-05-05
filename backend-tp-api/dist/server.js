@@ -5,7 +5,7 @@ const tslib_1 = require("tslib");
 const express_1 = tslib_1.__importDefault(require("express"));
 const bodyParser = tslib_1.__importStar(require("body-parser"));
 const fileUpload = require('express-fileupload');
-exports.app = express_1.default();
+exports.app = (0, express_1.default)();
 const apiHandler_1 = require("./api/apiHandler");
 const globalRoutes_1 = require("./api/globalRoutes");
 const deviseApiRoutes_1 = require("./api/deviseApiRoutes");
@@ -28,6 +28,7 @@ exports.app.use(fileUpload({
 exports.app.use(express_1.default.static('front-end'));
 exports.app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS"); //default: GET, ...
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });

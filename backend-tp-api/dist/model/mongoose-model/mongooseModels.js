@@ -20,8 +20,8 @@ class MongooseModels {
         switch (connectionName) {
             case "mongoose-test":
                 this.mModelsMapMap.set(connectionName, new Map());
-                this.addModel(connectionName, "devise", m_devise_1.initPersistentDeviseModel(cn));
-                this.addModel(connectionName, "publication", m_publication_1.initPersistentPublicationModel(cn));
+                this.addModel(connectionName, "devise", (0, m_devise_1.initPersistentDeviseModel)(cn));
+                this.addModel(connectionName, "publication", (0, m_publication_1.initPersistentPublicationModel)(cn));
                 break;
             case "other-connection":
                 this.mModelsMapMap.set(connectionName, new Map());

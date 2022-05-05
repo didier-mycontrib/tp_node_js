@@ -5,11 +5,11 @@ const express_1 = require("express");
 const apiHandler_1 = require("./apiHandler");
 const jwt_util_1 = require("../util/jwt-util");
 var secureMode = false; //or true
-exports.secureModeApiRouter = express_1.Router();
+exports.secureModeApiRouter = (0, express_1.Router)();
 //setting secureMode to true or false (tp , dev-only)
 // GET http://localhost:8282/auth-api/dev-only/set-secure-mode/true or false renvoyant { secureMode : true_or_false}
 exports.secureModeApiRouter.route('/auth-api/public/dev-only/set-secure-mode/:mode')
-    .get(apiHandler_1.asyncToResp(async function (req, res, next) {
+    .get((0, apiHandler_1.asyncToResp)(async function (req, res, next) {
     let mode = req.params.mode;
     secureMode = (mode == "true") ? true : false;
     return { secureMode: secureMode };
@@ -17,7 +17,7 @@ exports.secureModeApiRouter.route('/auth-api/public/dev-only/set-secure-mode/:mo
 //getting current secureMode : true or false (tp , dev-only)
 // GET http://localhost:8282/auth-api/dev-only/get-secure-mode renvoyant { secureMode : true_or_false}
 exports.secureModeApiRouter.route('/auth-api/public/dev-only/get-secure-mode')
-    .get(apiHandler_1.asyncToResp(async function (req, res, next) {
+    .get((0, apiHandler_1.asyncToResp)(async function (req, res, next) {
     return { secureMode: secureMode };
 }));
 function verifTokenInHeadersForPrivatePath(req, res, next) {
@@ -29,7 +29,7 @@ function verifTokenInHeadersForPrivatePath(req, res, next) {
 exports.verifTokenInHeadersForPrivatePath = verifTokenInHeadersForPrivatePath;
 // verif bearer token in Authorization headers of request :
 function verifTokenInHeaders(req, res, next) {
-    jwt_util_1.extractSubjectWithRolesClaimFromJwtInAuthorizationHeader(req.headers.authorization)
+    (0, jwt_util_1.extractSubjectWithRolesClaimFromJwtInAuthorizationHeader)(req.headers.authorization)
         .then((claim) => {
         if (checkAuthorizedPathFromRolesInJwtClaim(req.path, claim))
             next(); //ok valid jwt and role(s) in claim sufficient for authorize path

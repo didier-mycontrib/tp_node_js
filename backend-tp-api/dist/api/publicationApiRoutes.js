@@ -14,18 +14,18 @@ function initPublicationService() {
     else
         return new MongoosePublicationDataService_1.MongoosePublicationService();
 }
-exports.publicationApiRouter = express_1.Router();
+exports.publicationApiRouter = (0, express_1.Router)();
 // http://localhost:8282/news-api/public/publication renvoyant tout [ {} , {}]
 // http://localhost:8282/news-api/public/publication?... renvoyant [{}] selon critere
 exports.publicationApiRouter.route('/news-api/public/publication')
-    .get(apiHandler_1.asyncToResp(async function (req, res, next) {
+    .get((0, apiHandler_1.asyncToResp)(async function (req, res, next) {
     //let  critereXy = req.query.critereXy;
     let pubArray = await publicationService.findAll();
     return pubArray;
 }));
 // DELETE http://localhost:8282/news-api/private/role_publisher/publication/xyz
 exports.publicationApiRouter.route('/news-api/private/role_publisher/publication/:idPub')
-    .delete(apiHandler_1.asyncToResp(async function (req, res, next) {
+    .delete((0, apiHandler_1.asyncToResp)(async function (req, res, next) {
     let idPub = req.params.idPub;
     await publicationService.deleteById(idPub);
     return { "action": "publication with idPub=" + idPub + " was deleted" };
@@ -33,7 +33,7 @@ exports.publicationApiRouter.route('/news-api/private/role_publisher/publication
 //{  titre : "" , fichier_image : null ,  resume : "" , fichier_details_name : null , texte_complet : null , lien_externe : null , date : "2018-06-01"};
 // POST : SAVE or UPDATE
 exports.publicationApiRouter.route('/news-api/private/role_publisher/upload_publication')
-    .post(apiHandler_1.asyncToResp(async function (req, res, next) {
+    .post((0, apiHandler_1.asyncToResp)(async function (req, res, next) {
     var publication = JSON.parse(req.body.publication); // explicit JSON.parse() needed here because multipart / formData / upload
     //console.log("posting or reposting new publication :" +JSON.stringify(publication));
     if (!req.files) {

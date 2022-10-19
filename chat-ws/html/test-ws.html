@@ -1,0 +1,24 @@
+<html>
+
+<head>
+  <script>
+    let webSocket = new WebSocket('ws://localhost:5000/ws');
+    let el;
+
+    webSocket.onopen = () => { console.log('Info: WebSocket connection opened.'); };
+
+    webSocket.onmessage = (event) => {
+      el = document.getElementById('time');
+	  let objData = JSON.parse(event.data);
+	  if(objData.type == "timestamp" )
+         el.innerHTML = '(info): Current time on server is: ' + objData.info;
+    };
+  </script>
+</head>
+
+<body>
+  <h1>test-ws.html</h1>
+  <p id="time"></p>
+</body>
+
+</html>

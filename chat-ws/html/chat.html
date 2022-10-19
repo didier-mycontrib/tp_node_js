@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Chat temps réel avec websockets</title>
+        <style>
+            #zone_chat strong {
+                color: white;
+                background-color: black;
+                padding: 2px;
+            }
+        </style>
+    </head>
+ 
+    <body>
+        <h1>Chat temps réel avec websocket</h1>
+       
+   
+        message:<input type="text" name="message" id="message"  size="50" autofocus />
+        <input type="button" id="envoi_message" value="Envoyer" />
+        
+
+        <div id="zone_chat">    
+        </div>
+
+        <script>
+            var zoneChat = document.querySelector('#zone_chat');
+            var zoneMessage = document.querySelector('#message');
+
+            let socket = new WebSocket('ws://localhost:5000/ws');
+
+            // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
+            var pseudo = prompt('Quel est votre pseudo ?');
+            socket.send(JSON.stringify({type:'nouveau_client', pseudo : pseudo}));
+            document.title = pseudo + ' - ' + document.title;
+
+            
+            socket.onmessage= function(event) {
+                let objData = JSON.parse(event.data);
+                switch(objData.type){
+                    case 'chat_message' :
+                        // Quand on reçoit un message de chat, on l'insère dans la page
+                        insereMessage(objData.pseudo, objData.message);
+                        break;
+                    case  'nouveau_client' :
+                       // Quand un nouveau client se connecte, on affiche l'information
+                       zoneChat.innerHTML='<p><em>' + objData.pseudo + ' a rejoint le Chat !</em></p>'+zoneChat.innerHTML;
+                       break;
+                }
+            };
+
+
+           
+            // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+            document.querySelector('#envoi_message').addEventListener('click',function () {
+                var message = zoneMessage.value;
+                socket.send(JSON.stringify({type : 'chat_message', message: message})); // Transmet le message aux autres
+                insereMessage(pseudo, message); // Affiche le message aussi sur notre page
+                zoneMessage.value=''; zoneMessage.focus(); // Vide la zone de Chat et remet le focus dessus
+                return false; // Permet de bloquer l'envoi "classique" du formulaire
+            });
+            
+            // Ajoute un message dans la page
+            function insereMessage(pseudo, message) {
+                zoneChat.innerHTML='<p><strong>' + pseudo + '</strong> ' + message + '</p>'+zoneChat.innerHTML;
+            }
+        </script>
+    </body>
+</html>
+

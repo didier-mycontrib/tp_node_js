@@ -4,7 +4,9 @@ const tslib_1 = require("tslib");
 const chai_1 = tslib_1.__importDefault(require("chai"));
 const MongooseDeviseDataService_1 = require("../core/mongoose/MongooseDeviseDataService");
 let expect = chai_1.default.expect;
-var deviseDataService = new MongooseDeviseDataService_1.MongooseDeviseService();
+var deviseDataService 
+//=new MemDeviseService();
+= new MongooseDeviseDataService_1.MongooseDeviseService();
 describe("internal deviseService", function () {
     before(async function () {
         // runs before all tests :

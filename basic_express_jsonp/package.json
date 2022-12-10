@@ -2,7 +2,7 @@
   "name": "devise_jsonp_server",
   "version": "0.1.0",
   "dependencies": {
-    "express": "^4.17.0"
+    "express": "^4.17.3"
   },
   "description": "devise rest web services (jsonp) for angular-js",
   "main": "devise_jsonp_server.js",

@@ -35,6 +35,6 @@
     "@types/sequelize": "^4.28.9",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "mocha": "^6.2.0"
+    "mocha": "^10.2.0"
   }
 }

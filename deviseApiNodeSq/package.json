@@ -13,7 +13,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.8.9"
+    "sequelize": "^6.28.2"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.27",

@@ -7,7 +7,8 @@ et peut ainsi être utilisée en arrière plan du tp angular
 ===========
 npm install -s jsonwebtoken pour la version standalone
 ----------
-npm install -s passport passport-oauth2 pour version dépendante de OAuth2/keycloak
+npm install -s passport passport-keycloak-bearer pour version dépendante de OAuth2/keycloak
+npm install -s qs passport-jwt + axios/fetch token introspection (variante pour OAuth2/oidc)
 ===========
 NB: ce projet nécessite absolument une connexion à une base mongoDB
 (voir fichier db-mongoose.js)

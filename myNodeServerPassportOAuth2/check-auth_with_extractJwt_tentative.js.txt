@@ -4,9 +4,21 @@ import axios from 'axios';
 import passport from 'passport';
 import KeycloakBearerStrategy from 'passport-keycloak-bearer';
 import passportJwt from 'passport-jwt';
+
 const ExtractJwt = passportJwt.ExtractJwt;
 //NB: si autre provider de keycloak , soit trouver autre stategie existante , soit
 //adapter le code source de passport-keycloak-bearer sur partie URL
+
+/*
+//A ameliorer : configurer nodeJs pour qu'il connaisse les derniers certificats 
+//de manière à accepter https://www.d-defrance.fr/keycloak plutot que http://www.d-defrance.fr/keycloak
+
+import sslRootCas from 'ssl-root-cas'; //npm install ssl-root-cas --save
+var rootCas = sslRootCas.create();
+
+import https from 'https';
+https.globalAgent.options.ca = rootCas;
+*/
 
 async function mytokenIntrospection(options,accessToken) {
   try {
@@ -89,18 +101,18 @@ function verifTokenInHeadersForPrivatePath(req , res  , next ) {
     else {
        checkAuth(req,res,next);//if secureMode==true
       /*
-      // test (presque ok , pb 127.0.0.1 et localhost )
+      // test ( ok avec http://d2f2021:8989/keycloak, pb 127.0.0.1 et localhost )
        let jwtFromRequest = (ExtractJwt.fromAuthHeaderAsBearerToken())(req);
        //console.log("jwtFromRequest="+jwtFromRequest+"\n");
-       //let myDecryptBase64JWT = new MyDecryptBase64JWT(jwtFromRequest);
+       let myDecryptBase64JWT = new MyDecryptBase64JWT(jwtFromRequest);
        //console.log("myDecryptBase64JWT="+JSON.stringify(myDecryptBase64JWT)+"\n");
        //NB: http://127.0.0.1 is ok but http://localhost is not ok for axios
        //NB: http://127.0.0.1 is not ok but http://localhost is  ok for token/introspect
-       //==> ISSUE A TROUVER !!!! (ceci-dit , en prod autre config https, ...)
+       //http://d2f2021:8989/keycloak is ok , https://d2f2021:8443/keycloak required real certificate)
       mytokenIntrospection({
-        endpoint: 'http://localhost:8989/realms/myrealm/protocol/openid-connect/token/introspect' ,
+        endpoint: 'https://d2f2021:8443/keycloak/realms/myrealm/protocol/openid-connect/token/introspect' ,
         client_id: 'client1',
-        client_secret: '5sYgLuiSBpM3vP8jbabeOJR3Pw0gs7kF'
+        client_secret: 'VOChuGulz4fOQKjpELRahMBZGHrpW4f2'
       },jwtFromRequest);
 
       //https://www.baeldung.com/postman-keycloak-endpoints ok avec postman !!!!
@@ -117,10 +129,21 @@ function extractUserInfosFromJwtPayload(jwtPayload){
     }
   }
 
+/*
+"url": "http://127.0.0.1:8989" ok
+"url": "http://d2f2021:8989/keycloak" ok
+"url": "https://d2f2021:8443/keycloak" don't work with self signed certificate
+"url": "https://www.d-defrance.fr/keycloak" presque ok with real certificate in kong api-gateway
+but "unable to verify the first certificate" (may be chain of certificate to configure???)
+"url": "http://www.d-defrance.fr/keycloak" ok selon config
+"url": "https://www.d-defrance.fr:8443/keycloak" pas ok
+"url" : http://www.d-defrance.fr:8989/keycloak ok selon config
+*/
+
 // new KeycloakBearerStrategy(options, verify)
 passport.use(new KeycloakBearerStrategy({
     "realm": "myrealm",
-    "url": "http://127.0.0.1:8989"
+    "url": "http://www.d-defrance.fr:8989/keycloak"
   }, (jwtPayload, done) => {
     //console.log("jwtPayload="+ JSON.stringify(jwtPayload));
     const user = extractUserInfosFromJwtPayload(jwtPayload);

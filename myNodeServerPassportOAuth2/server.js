@@ -8,8 +8,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import produitApiRoutes from './produit-api-routes.js';
 import deviseApiRoutes from './devise-api-routes.js';
 import loginApiRoutes from './login-api-routes.js';
+import oidcAccountApiRoutes from './oidc-account-api-routes.js';
+/*
+//old version:
 import verifAuth from './verif-auth.js'; //for standalone jwt version
 import checkAuth from './check-auth.js';//for oauth2/iodc/keycloak version
+*/
+import verifAuth from './verif-auth.js'; //for standalone jwt or oauth2/iodc/keycloak  
 
 //support parsing of JSON post data
 var jsonParser = express.json({  extended: true}); 
@@ -37,9 +42,18 @@ app.get('/', function(req , res ) {
 });
 
 //verif auth beared token in request for private api/path:
+
+/*
+//OLD VERSION:
 //app.use(verifAuth.verifTokenInHeadersForPrivatePath); //just for standalone version (without OAuth2 autorization server)
+
 app.use(checkAuth.verifTokenInHeadersForPrivatePath); //for version with OAuth2 autorization server
 app.use(checkAuth.checkScopeForPrivatePath); //for version with OAuth2 autorization server
+*/
+
+//NEW VERSION:
+app.use(verifAuth.verifTokenInHeadersForPrivatePath); // with OAuth2 autorization server or Standalone jwt
+app.use(verifAuth.checkScopeForPrivatePath); //with OAuth2 autorization server (no effect in standaloneMode)
 
 //ROUTES ORDINAIRES (apres PRE traitements , avant POST traitements)
 
@@ -47,6 +61,7 @@ app.use(checkAuth.checkScopeForPrivatePath); //for version with OAuth2 autorizat
 app.use(produitApiRoutes.apiRouter);
 app.use(deviseApiRoutes.apiRouter);
 app.use(loginApiRoutes.apiRouter);
+app.use(oidcAccountApiRoutes.apiRouter);
 app.use(verifAuth.apiRouter); //dev-only ( http://localhost:8282/auth-api/dev-only/secure/true or false)
 
 let backendPort = process.env.PORT || 8282; 

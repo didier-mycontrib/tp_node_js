@@ -1,6 +1,5 @@
 import express from 'express';
 const apiRouter = express.Router();
-import checkAuth from './check-auth.js';//for oauth2/iodc/keycloak version
 
 import deviseDao from './devise-dao-mongoose.js';
 var PersistentDeviseModel = deviseDao.ThisPersistentModel; //to use only for specific extra request (not in dao)
